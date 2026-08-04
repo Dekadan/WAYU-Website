@@ -1,0 +1,13 @@
+---
+import DocumentsIndex from '../../../views/DocumentsIndex.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const lang = 'tr' as const;
+const t = useTranslations(lang);
+---
+
+<DocumentsIndex
+  lang={lang}
+  title={t('nav.documents')}
+  description="WAYU'nun üzerine kurulduğu tüzük, bildirge ve kongre kararları."
+/>

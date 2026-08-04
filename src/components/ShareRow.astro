@@ -1,0 +1,66 @@
+---
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  url: string;
+}
+
+const { lang, title, url } = Astro.props;
+const t = useTranslations(lang);
+
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+
+const targets = [
+  { name: 'X', href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}` },
+  { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` },
+  { name: 'Telegram', href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}` },
+  { name: 'WhatsApp', href: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}` },
+];
+---
+
+<div class="flex flex-wrap items-center gap-2">
+  <span class="eyebrow mr-1 text-[var(--text-faint)]">{t('post.share')}</span>
+  {
+    targets.map((target) => (
+      <a
+        href={target.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="eyebrow rounded-full border border-[var(--border-strong)] px-3 py-2 transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      >
+        {target.name}
+      </a>
+    ))
+  }
+  <button
+    type="button"
+    data-copy-link
+    data-url={url}
+    data-copied={t('post.copied')}
+    class="eyebrow rounded-full border border-[var(--border-strong)] px-3 py-2 transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+  >
+    {t('post.copyLink')}
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-link]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const url = button.dataset.url;
+      if (!url) return;
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = button.textContent;
+        button.textContent = button.dataset.copied ?? 'Copied';
+        setTimeout(() => {
+          button.textContent = original;
+        }, 2000);
+      } catch {
+        /* Clipboard is unavailable (insecure context) — leave the label alone. */
+      }
+    });
+  });
+</script>

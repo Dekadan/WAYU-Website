@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import EmptyState from '../components/EmptyState.astro';
+import { formatDate, useTranslations, type Lang } from '../i18n/utils';
+import { entryUrl, getDocuments } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+}
+
+const { lang, title, description } = Astro.props;
+const t = useTranslations(lang);
+const documents = await getDocuments(lang);
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <PageHeader eyebrow={t('site.name')} title={title} description={description} />
+
+  <div class="container-page py-14">
+    {
+      documents.length > 0 ? (
+        <ol class="border-t border-[var(--border)]">
+          {documents.map((entry) => {
+            const data = entry.data as typeof entry.data & { kind: string; file?: string };
+            return (
+              <li class="border-b border-[var(--border)]">
+                <div class="group flex flex-col gap-4 py-8 sm:flex-row sm:items-baseline sm:gap-10">
+                  <div class="sm:w-40 sm:shrink-0">
+                    <span class="eyebrow text-[var(--accent)]">{data.kind}</span>
+                    <time
+                      datetime={data.date.toISOString()}
+                      class="mt-1.5 block text-xs text-[var(--text-faint)]"
+                    >
+                      {formatDate(data.date, lang)}
+                    </time>
+                  </div>
+
+                  <div class="min-w-0 flex-1">
+                    <h2 class="headline text-2xl sm:text-[1.65rem]">
+                      <a
+                        href={entryUrl('documents', entry)}
+                        class="transition group-hover:text-[var(--accent)]"
+                      >
+                        {data.title}
+                      </a>
+                    </h2>
+                    {data.description && (
+                      <p class="mt-3 max-w-2xl leading-relaxed text-[var(--text-muted)]">
+                        {data.description}
+                      </p>
+                    )}
+
+                    <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+                      <a
+                        href={entryUrl('documents', entry)}
+                        class="eyebrow link-underline text-[var(--accent)]"
+                      >
+                        {t('list.readMore')} →
+                      </a>
+                      {data.file && (
+                        <a
+                          href={data.file}
+                          download
+                          class="eyebrow link-underline text-[var(--text-faint)]"
+                        >
+                          {t('post.download')} ↓
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <EmptyState message={t('list.empty')} />
+      )
+    }
+  </div>
+</BaseLayout>

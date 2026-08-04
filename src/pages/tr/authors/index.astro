@@ -1,0 +1,13 @@
+---
+import AuthorsIndex from '../../../views/AuthorsIndex.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const lang = 'tr' as const;
+const t = useTranslations(lang);
+---
+
+<AuthorsIndex
+  lang={lang}
+  title={t('nav.authors')}
+  description="Altı kıtadaki üye örgütlerden, WAYU için yazan yoldaşlar."
+/>

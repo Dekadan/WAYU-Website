@@ -1,0 +1,42 @@
+---
+interface Props {
+  /** Height of the emblem in px; the wordmark scales with it. */
+  size?: number;
+  showWordmark?: boolean;
+  class?: string;
+}
+
+const { size = 38, showWordmark = true, class: className = '' } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-2.5 ${className}`}>
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 48 48"
+    fill="none"
+    aria-hidden="true"
+    class="shrink-0"
+  >
+    <circle cx="24" cy="24" r="22" fill="var(--accent)"></circle>
+    <g stroke="var(--accent-contrast)" stroke-width="1.5" opacity="0.75" fill="none">
+      <circle cx="24" cy="24" r="15.5"></circle>
+      <ellipse cx="24" cy="24" rx="6.5" ry="15.5"></ellipse>
+      <path d="M9.2 19.2h29.6M9.2 28.8h29.6"></path>
+    </g>
+    <path
+      d="M24 13.4 26.7 21h8l-6.5 4.7 2.5 7.6L24 28.6l-6.7 4.7 2.5-7.6L13.3 21h8z"
+      fill="var(--accent-contrast)"></path>
+  </svg>
+
+  {
+    showWordmark && (
+      <span class="flex flex-col leading-none">
+        <span class="headline text-[1.35rem] tracking-[0.02em]">WAYU</span>
+        <span class="eyebrow mt-1 text-[0.53rem] opacity-70">
+          <slot name="subtitle">Anti-Imperialist Youth</slot>
+        </span>
+      </span>
+    )
+  }
+</span>

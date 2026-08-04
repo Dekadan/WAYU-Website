@@ -1,0 +1,220 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import AuthorChip from '../components/AuthorChip.astro';
+import Card from '../components/Card.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ShareRow from '../components/ShareRow.astro';
+import { formatDate, localisePath, useTranslations, type Lang } from '../i18n/utils';
+import { entryUrl, readingTime, type Section, type SectionEntry } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  section: Section;
+  sectionLabel: string;
+  entry: SectionEntry;
+  author?: CollectionEntry<'authors'>;
+  related: SectionEntry[];
+  body?: string;
+}
+
+const { lang, section, sectionLabel, entry, author, related, body } = Astro.props;
+const { title, description, date, updated, image, imageAlt, tags } = entry.data;
+const data = entry.data as Record<string, any>;
+const t = useTranslations(lang);
+
+const sectionHref = localisePath(`/${section}`, lang);
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const minutes = readingTime(body);
+
+const signatories: string[] = data.signatories ?? [];
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  image={image}
+  type="article"
+  publishedTime={date}
+>
+  <article>
+    <header class="border-b border-[var(--border)] bg-[var(--surface-sunken)]">
+      <div class="container-page py-12 sm:py-16">
+        <div class="max-w-4xl">
+          <div class="eyebrow flex flex-wrap items-center gap-x-3 gap-y-2">
+            <a href={sectionHref} class="text-[var(--accent)] hover:underline">{sectionLabel}</a>
+            <span class="opacity-30">/</span>
+            <time datetime={date.toISOString()} class="text-[var(--text-faint)]">
+              {formatDate(date, lang)}
+            </time>
+            {
+              section !== 'documents' && (
+                <>
+                  <span class="opacity-30">/</span>
+                  <span class="text-[var(--text-faint)]">{minutes} min</span>
+                </>
+              )
+            }
+          </div>
+
+          <h1 class="headline mt-4 text-4xl sm:text-5xl lg:text-[3.5rem]">{title}</h1>
+
+          {
+            description && (
+              <p class="mt-5 font-serif text-xl leading-relaxed text-[var(--text-muted)]">
+                {description}
+              </p>
+            )
+          }
+
+          <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+            {author && <AuthorChip author={author} />}
+            {
+              data.issuedBy && (
+                <p class="text-sm">
+                  <span class="eyebrow block text-[var(--text-faint)]">{t('post.issuedBy')}</span>
+                  <span class="mt-1 block font-display font-bold">{data.issuedBy}</span>
+                </p>
+              )
+            }
+            {
+              data.location && (
+                <p class="text-sm">
+                  <span class="eyebrow block text-[var(--text-faint)]">{t('post.source')}</span>
+                  <span class="mt-1 block font-display font-bold">{data.location}</span>
+                </p>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {
+      image && (
+        <figure class="container-page mt-10">
+          <img
+            src={image}
+            alt={imageAlt ?? ''}
+            class="w-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          {imageAlt && (
+            <figcaption class="mt-3 text-sm text-[var(--text-faint)]">{imageAlt}</figcaption>
+          )}
+        </figure>
+      )
+    }
+
+    <div class="container-page mt-12">
+      <div class="mx-auto max-w-[46rem]">
+        {
+          data.file && (
+            <a
+              href={data.file}
+              class="eyebrow mb-10 inline-flex items-center gap-2.5 rounded-full bg-[var(--accent)] px-5 py-3.5 text-[var(--accent-contrast)] transition hover:brightness-110"
+              download
+            >
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16" />
+              </svg>
+              {t('post.download')}
+            </a>
+          )
+        }
+
+        <div class="prose-wayu">
+          <slot />
+        </div>
+
+        {
+          signatories.length > 0 && (
+            <section class="mt-14 border-t-2 border-[var(--text)] pt-6">
+              <h2 class="eyebrow text-[var(--accent)]">{t('post.signatories')}</h2>
+              <ul class="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                {signatories.map((name) => (
+                  <li class="flex gap-2.5 text-[0.95rem] text-[var(--text-muted)]">
+                    <span aria-hidden="true" class="text-[var(--accent)]">
+                      ★
+                    </span>
+                    <span>{name}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        {
+          (data.sourceUrl || data.originalSourceUrl) && (
+            <p class="mt-10 border-l-2 border-[var(--accent)] pl-4 text-sm text-[var(--text-muted)]">
+              {data.originalSourceUrl ? t('post.originalSource') : t('post.source')}:{' '}
+              <a
+                href={data.originalSourceUrl ?? data.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-[var(--accent)] underline underline-offset-2"
+              >
+                {data.originalSource ?? data.source ?? data.originalSourceUrl ?? data.sourceUrl}
+              </a>
+            </p>
+          )
+        }
+
+        {
+          updated && (
+            <p class="mt-8 text-sm text-[var(--text-faint)]">
+              {t('post.updated')}: <time datetime={updated.toISOString()}>{formatDate(updated, lang)}</time>
+            </p>
+          )
+        }
+
+        {
+          tags.length > 0 && (
+            <div class="mt-10 flex flex-wrap items-center gap-2">
+              <span class="eyebrow mr-1 text-[var(--text-faint)]">{t('post.tags')}</span>
+              {tags.map((tag) => (
+                <span class="rounded-full bg-[var(--surface-sunken)] px-3 py-1.5 text-xs text-[var(--text-muted)]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )
+        }
+
+        <div class="mt-10 border-t border-[var(--border)] pt-8">
+          <ShareRow lang={lang} title={title} url={canonical} />
+        </div>
+
+        <a href={sectionHref} class="eyebrow link-underline mt-10 inline-block text-[var(--accent)]">
+          ← {t('post.back')}
+        </a>
+      </div>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="container-page mt-24">
+          <SectionHeading title={t('post.related')} as="h2" />
+          <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((item) => (
+              <Card
+                lang={lang}
+                href={entryUrl(section, item)}
+                title={item.data.title}
+                description={item.data.description}
+                image={item.data.image}
+                imageAlt={item.data.imageAlt}
+                date={item.data.date}
+                kicker={sectionLabel}
+              />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

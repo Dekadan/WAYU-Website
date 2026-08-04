@@ -1,0 +1,14 @@
+---
+import SectionIndex from '../../views/SectionIndex.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<SectionIndex
+  lang={lang}
+  section="news"
+  title={t('nav.news')}
+  description="Reports on the struggles we consider worth following."
+/>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getLangFromUrl, localisePath, useTranslations } from '../i18n/utils';
+
+// A 404 is served for unknown paths in either language, so resolve the
+// language from whatever the visitor actually asked for.
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={t('error.404.title')} noindex>
+  <section class="container-page flex min-h-[60vh] flex-col justify-center py-20">
+    <p class="headline text-[7rem] leading-none text-[var(--accent)] sm:text-[10rem]">404</p>
+    <h1 class="headline mt-4 text-3xl sm:text-4xl">{t('error.404.title')}</h1>
+    <p class="mt-4 max-w-lg text-lg text-[var(--text-muted)]">{t('error.404.body')}</p>
+    <a
+      href={localisePath('/', lang)}
+      class="eyebrow mt-9 inline-block w-fit rounded-full bg-[var(--accent)] px-6 py-4 text-[var(--accent-contrast)] transition hover:brightness-110"
+    >
+      {t('error.404.cta')} →
+    </a>
+  </section>
+</BaseLayout>

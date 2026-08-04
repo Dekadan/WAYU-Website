@@ -1,0 +1,330 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import AuthorChip from '../components/AuthorChip.astro';
+import EmptyState from '../components/EmptyState.astro';
+import { formatDate, localisePath, useTranslations, type Lang } from '../i18n/utils';
+import {
+  entryUrl,
+  findAuthor,
+  getAuthors,
+  getDocuments,
+  getFeed,
+  getSection,
+  authorUrl,
+} from '../lib/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const [feed, statements, articles, news, documents, authors, about] = await Promise.all([
+  getFeed(lang),
+  getSection('statements', lang),
+  getSection('articles', lang),
+  getSection('news', lang),
+  getDocuments(lang),
+  getAuthors(lang),
+  getEntry('pages', `${lang}/about`),
+]);
+
+/*
+ * The lead story is whichever item is marked `featured`, falling back to the
+ * newest thing published so the homepage is never empty.
+ */
+const featured = feed.filter((item) => item.entry.data.featured);
+const ordered = [...featured, ...feed.filter((item) => !item.entry.data.featured)];
+const [lead, ...rest] = ordered;
+const secondary = rest.slice(0, 4);
+
+const sectionLabels: Record<string, string> = {
+  statements: t('home.statements'),
+  articles: t('home.articles'),
+  news: t('home.news'),
+};
+
+/** Bylines are resolved up front so the template stays declarative. */
+const articleCards = await Promise.all(
+  articles.slice(0, 6).map(async (entry) => ({
+    entry,
+    author: await findAuthor((entry.data as { author?: string }).author, lang),
+  })),
+);
+
+const leadAuthor =
+  lead && lead.section === 'articles'
+    ? await findAuthor((lead.entry.data as { author?: string }).author, lang)
+    : undefined;
+---
+
+<BaseLayout lang={lang} description={about?.data.description}>
+  {/* ---------------------------------------------------------------- Lead */}
+  <section class="container-page pt-10 pb-16 sm:pt-14">
+    {
+      lead ? (
+        <div class="grid gap-x-12 gap-y-12 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+          <div>
+            <Card
+              lang={lang}
+              variant="lead"
+              href={entryUrl(lead.section, lead.entry)}
+              title={lead.entry.data.title}
+              description={lead.entry.data.description}
+              image={lead.entry.data.image}
+              imageAlt={lead.entry.data.imageAlt}
+              date={lead.entry.data.date}
+              kicker={sectionLabels[lead.section]}
+            />
+            {leadAuthor && (
+              <div class="mt-6">
+                <AuthorChip author={leadAuthor} />
+              </div>
+            )}
+          </div>
+
+          <div class="flex flex-col divide-y divide-[var(--border)] border-t border-[var(--border)] lg:border-t-0 lg:pt-0">
+            <h2 class="sr-only">{t('home.latest')}</h2>
+            {secondary.map((item) => (
+              <div class="py-6 first:pt-0 lg:first:pt-0">
+                <Card
+                  lang={lang}
+                  variant="compact"
+                  href={entryUrl(item.section, item.entry)}
+                  title={item.entry.data.title}
+                  date={item.entry.data.date}
+                  kicker={sectionLabels[item.section]}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <EmptyState message={t('list.empty')} />
+      )
+    }
+  </section>
+
+  {/* ------------------------------------------------------------ What is WAYU */}
+  <!--
+    The border keeps the band distinct from the page in dark mode, where the
+    masthead colour is close to the surface behind it.
+  -->
+  <section class="border-y-2 border-[var(--accent)] bg-[var(--masthead)] text-[var(--masthead-text)]">
+    <div class="container-page py-16 sm:py-24">
+      <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-20">
+        <div>
+          <p class="eyebrow text-[var(--accent)]">{t('site.name')}</p>
+          <h2 class="headline mt-4 text-4xl sm:text-5xl">{t('home.about.title')}</h2>
+          <a
+            href={localisePath('/about', lang)}
+            class="eyebrow mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3.5 text-[var(--accent-contrast)] transition hover:brightness-110"
+          >
+            {t('home.about.cta')} →
+          </a>
+        </div>
+
+        <div>
+          <p class="font-serif text-xl leading-relaxed opacity-90 sm:text-[1.35rem]">
+            {about?.data.description}
+          </p>
+
+          {
+            about && about.data.stats.length > 0 && (
+              <dl class="mt-12 grid grid-cols-2 gap-8 border-t border-white/15 pt-10 sm:grid-cols-4">
+                {about.data.stats.map((stat) => (
+                  <div>
+                    <dt class="sr-only">{stat.label}</dt>
+                    <dd>
+                      <span class="headline block text-4xl text-[var(--accent)]">{stat.value}</span>
+                      <span class="mt-2 block text-xs leading-snug opacity-65">{stat.label}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------- Statements */}
+  <section class="container-page mt-20">
+    <SectionHeading
+      title={t('home.statements')}
+      href={localisePath('/statements', lang)}
+      viewAllLabel={t('list.viewAll')}
+    />
+    {
+      statements.length > 0 ? (
+        <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {statements.slice(0, 3).map((entry) => (
+            <Card
+              lang={lang}
+              href={entryUrl('statements', entry)}
+              title={entry.data.title}
+              description={entry.data.description}
+              image={entry.data.image}
+              imageAlt={entry.data.imageAlt}
+              date={entry.data.date}
+              kicker={(entry.data as { issuedBy?: string }).issuedBy ?? t('home.statements')}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyState message={t('list.empty')} />
+      )
+    }
+  </section>
+
+  {/* ------------------------------------------------------------ Articles */}
+  <section class="container-page mt-24">
+    <SectionHeading
+      title={t('home.articles')}
+      href={localisePath('/articles', lang)}
+      viewAllLabel={t('list.viewAll')}
+    />
+    {
+      articleCards.length > 0 ? (
+        <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {articleCards.map(({ entry, author }) => (
+            <Card
+              lang={lang}
+              href={entryUrl('articles', entry)}
+              title={entry.data.title}
+              description={entry.data.description}
+              image={entry.data.image}
+              imageAlt={entry.data.imageAlt}
+              date={entry.data.date}
+              kicker={t('home.articles')}
+              author={author?.data.name}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyState message={t('list.empty')} />
+      )
+    }
+  </section>
+
+  {/* ---------------------------------------------------------------- News */}
+  {
+    news.length > 0 && (
+      <section class="container-page mt-24">
+        <SectionHeading
+          title={t('home.news')}
+          href={localisePath('/news', lang)}
+          viewAllLabel={t('list.viewAll')}
+        />
+        <ul class="grid gap-x-12 sm:grid-cols-2">
+          {news.slice(0, 6).map((entry) => (
+            <li class="border-b border-[var(--border)]">
+              <a href={entryUrl('news', entry)} class="group flex gap-5 py-5">
+                <time
+                  datetime={entry.data.date.toISOString()}
+                  class="eyebrow w-24 shrink-0 pt-1 text-[var(--text-faint)]"
+                >
+                  {formatDate(entry.data.date, lang)}
+                </time>
+                <span class="headline clamp-2 text-lg transition group-hover:text-[var(--accent)]">
+                  {entry.data.title}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {/* ----------------------------------------------------------- Documents */}
+  {
+    documents.length > 0 && (
+      <section class="container-page mt-24">
+        <SectionHeading
+          title={t('home.documents')}
+          href={localisePath('/documents', lang)}
+          viewAllLabel={t('list.viewAll')}
+        />
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {documents.slice(0, 6).map((entry) => (
+            <li>
+              <a
+                href={entryUrl('documents', entry)}
+                class="group flex h-full flex-col justify-between gap-6 border border-[var(--border)] bg-[var(--surface-raised)] p-6 transition hover:border-[var(--accent)]"
+              >
+                <span>
+                  <span class="eyebrow text-[var(--accent)]">
+                    {(entry.data as { kind: string }).kind}
+                  </span>
+                  <span class="headline mt-3 block text-lg">{entry.data.title}</span>
+                </span>
+                <span class="eyebrow text-[var(--text-faint)] transition group-hover:text-[var(--accent)]">
+                  {t('list.readMore')} →
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {/* ------------------------------------------------------------- Authors */}
+  {
+    authors.length > 0 && (
+      <section class="container-page mt-24">
+        <SectionHeading
+          title={t('home.authors')}
+          href={localisePath('/authors', lang)}
+          viewAllLabel={t('list.viewAll')}
+        />
+        <ul class="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+          {authors.slice(0, 6).map((author) => (
+            <li>
+              <a href={authorUrl(author.id)} class="block">
+                <AuthorChip author={author} link={false} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {/* ---------------------------------------------------------------- Join */}
+  <section class="container-page mt-24">
+    <div class="relative overflow-hidden bg-[var(--accent)] px-8 py-16 text-[var(--accent-contrast)] sm:px-14 sm:py-20">
+      <div class="relative max-w-2xl">
+        <h2 class="headline text-3xl sm:text-4xl lg:text-5xl">{t('home.join.title')}</h2>
+        <p class="mt-5 text-lg leading-relaxed opacity-90">{t('home.join.body')}</p>
+        <a
+          href={localisePath('/join', lang)}
+          class="eyebrow mt-9 inline-block rounded-full bg-[var(--accent-contrast)] px-6 py-4 text-[var(--accent)] transition hover:opacity-90"
+        >
+          {t('home.join.cta')} →
+        </a>
+      </div>
+
+      {/* Decorative globe grid bleeding off the right edge. */}
+      <svg
+        class="pointer-events-none absolute -top-16 -right-20 hidden size-[26rem] opacity-15 lg:block"
+        viewBox="0 0 48 48"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.6"
+        aria-hidden="true"
+      >
+        <circle cx="24" cy="24" r="23"></circle>
+        <ellipse cx="24" cy="24" rx="9" ry="23"></ellipse>
+        <ellipse cx="24" cy="24" rx="16.5" ry="23"></ellipse>
+        <path d="M1 16h46M1 24h46M1 32h46"></path>
+      </svg>
+    </div>
+  </section>
+</BaseLayout>

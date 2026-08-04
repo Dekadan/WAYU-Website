@@ -1,0 +1,360 @@
+# Decap CMS — the /admin panel behind wayouthunion.org
+#
+# Content is committed straight to the repository, so the CMS never needs a
+# database or a server of its own. Two backends are supported:
+#
+#   git-gateway  — Netlify hosting + Netlify Identity. Editors are invited by
+#                  email and never touch GitHub. This is the active setting.
+#   github       — any host. Editors log in with a GitHub account that has
+#                  write access to the repository. Swap the block below and
+#                  see README.md for the OAuth step.
+
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: 'content: create {{collection}} "{{slug}}"'
+    update: 'content: update {{collection}} "{{slug}}"'
+    delete: 'content: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'content: upload {{path}}'
+    deleteMedia: 'content: delete {{path}}'
+
+# backend:
+#   name: github
+#   repo: Dekadan/WAYU-Website
+#   branch: main
+
+# Lets `npm run cms` edit local files while `npm run dev` is running.
+local_backend: true
+
+# Editors submit changes for review instead of publishing straight to main.
+publish_mode: editorial_workflow
+
+media_folder: public/uploads
+public_folder: /uploads
+
+i18n:
+  # Writes `src/content/<collection>/<locale>/<slug>.md`, which is exactly the
+  # layout src/content.config.ts reads back.
+  structure: multiple_folders
+  locales: [en, tr]
+  default_locale: en
+
+locale: en
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  # ------------------------------------------------------------- Statements
+  - name: statements
+    label: Statements
+    label_singular: Statement
+    description: Official positions of WAYU and its member organisations.
+    folder: src/content/statements
+    create: true
+    slug: '{{slug}}'
+    i18n: true
+    preview_path: 'statements/{{slug}}'
+    summary: '{{title}} — {{date | date("YYYY-MM-DD")}}'
+    sortable_fields: [date, title]
+    view_filters:
+      - { label: Drafts, field: draft, pattern: true }
+      - { label: Featured, field: featured, pattern: true }
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - {
+          name: description,
+          label: Summary,
+          widget: text,
+          required: false,
+          i18n: true,
+          hint: One paragraph. Used in listings, search results and link previews.,
+        }
+      - { name: date, label: Date, widget: datetime, date_format: DD.MM.YYYY, time_format: false, format: 'YYYY-MM-DD', i18n: duplicate }
+      - {
+          name: issuedBy,
+          label: Issued by,
+          widget: string,
+          required: false,
+          i18n: true,
+          hint: 'The body that took the decision, e.g. WAYU Executive Committee.',
+        }
+      - {
+          name: signatories,
+          label: Signatories,
+          widget: list,
+          required: false,
+          i18n: true,
+          field: { name: name, label: Organisation, widget: string },
+        }
+      - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
+      - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true, hint: What a screen reader announces in place of the image. }
+      - { name: tags, label: Tags, widget: list, required: false, i18n: true }
+      - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
+      - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Text, widget: markdown, i18n: true }
+
+  # --------------------------------------------------------------- Articles
+  - name: articles
+    label: Articles
+    label_singular: Article
+    description: Analysis and opinion, published under an author's name.
+    folder: src/content/articles
+    create: true
+    slug: '{{slug}}'
+    i18n: true
+    preview_path: 'articles/{{slug}}'
+    summary: '{{title}} — {{date | date("YYYY-MM-DD")}}'
+    sortable_fields: [date, title]
+    view_filters:
+      - { label: Drafts, field: draft, pattern: true }
+      - { label: Featured, field: featured, pattern: true }
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: description, label: Summary, widget: text, required: false, i18n: true }
+      - { name: date, label: Date, widget: datetime, date_format: DD.MM.YYYY, time_format: false, format: 'YYYY-MM-DD', i18n: duplicate }
+      - {
+          name: author,
+          label: Author,
+          widget: relation,
+          collection: authors,
+          search_fields: [name],
+          value_field: '{{slug}}',
+          display_fields: [name],
+          required: false,
+          i18n: duplicate,
+          hint: Pick a profile from the Authors section. Add the author there first.,
+        }
+      - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
+      - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true }
+      - { name: tags, label: Tags, widget: list, required: false, i18n: true }
+      - {
+          name: originalSource,
+          label: Original source,
+          widget: string,
+          required: false,
+          i18n: true,
+          hint: Fill in only when the text was first published elsewhere.,
+        }
+      - { name: originalSourceUrl, label: Original source URL, widget: string, required: false, i18n: duplicate, pattern: ['^https?://.+', 'Must start with http:// or https://'] }
+      - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
+      - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Text, widget: markdown, i18n: true }
+
+  # ------------------------------------------------------------------- News
+  - name: news
+    label: News
+    label_singular: News item
+    description: Short reports on developments worth following.
+    folder: src/content/news
+    create: true
+    slug: '{{slug}}'
+    i18n: true
+    preview_path: 'news/{{slug}}'
+    summary: '{{title}} — {{date | date("YYYY-MM-DD")}}'
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: description, label: Summary, widget: text, required: false, i18n: true }
+      - { name: date, label: Date, widget: datetime, date_format: DD.MM.YYYY, time_format: false, format: 'YYYY-MM-DD', i18n: duplicate }
+      - { name: location, label: Location, widget: string, required: false, i18n: true }
+      - { name: source, label: Source, widget: string, required: false, i18n: true }
+      - { name: sourceUrl, label: Source URL, widget: string, required: false, i18n: duplicate, pattern: ['^https?://.+', 'Must start with http:// or https://'] }
+      - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
+      - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true }
+      - { name: tags, label: Tags, widget: list, required: false, i18n: true }
+      - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
+      - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Text, widget: markdown, i18n: true }
+
+  # -------------------------------------------------------------- Documents
+  - name: documents
+    label: Documents
+    label_singular: Document
+    description: Constitution, declarations, congress resolutions and reports.
+    folder: src/content/documents
+    create: true
+    slug: '{{slug}}'
+    i18n: true
+    preview_path: 'documents/{{slug}}'
+    summary: '{{order}} · {{title}}'
+    sortable_fields: [order, date, title]
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: description, label: Summary, widget: text, required: false, i18n: true }
+      - { name: date, label: Date adopted, widget: datetime, date_format: DD.MM.YYYY, time_format: false, format: 'YYYY-MM-DD', i18n: duplicate }
+      - {
+          name: kind,
+          label: Type,
+          widget: select,
+          default: declaration,
+          i18n: duplicate,
+          options:
+            [
+              { label: Constitution, value: constitution },
+              { label: Declaration, value: declaration },
+              { label: Resolution, value: resolution },
+              { label: Programme, value: programme },
+              { label: Report, value: report },
+            ],
+        }
+      - {
+          name: order,
+          label: Order,
+          widget: number,
+          default: 100,
+          value_type: int,
+          i18n: duplicate,
+          hint: Lower numbers appear first. The constitution is 1.,
+        }
+      - { name: file, label: PDF version, widget: file, required: false, i18n: duplicate, hint: Optional. Adds a download button at the top of the page. }
+      - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
+      - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true }
+      - { name: tags, label: Tags, widget: list, required: false, i18n: true }
+      - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
+      - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Text, widget: markdown, i18n: true }
+
+  # ---------------------------------------------------------------- Authors
+  - name: authors
+    label: Authors
+    label_singular: Author
+    description: Contributor profiles. Create one before assigning an article.
+    folder: src/content/authors
+    create: true
+    slug: '{{slug}}'
+    i18n: true
+    preview_path: 'authors/{{slug}}'
+    summary: '{{name}} — {{organization}}'
+    sortable_fields: [name]
+    fields:
+      - { name: name, label: Name, widget: string, i18n: true }
+      - { name: role, label: Role, widget: string, required: false, i18n: true }
+      - { name: organization, label: Organisation, widget: string, required: false, i18n: true }
+      - { name: country, label: Country, widget: string, required: false, i18n: true }
+      - { name: bio, label: Short biography, widget: text, required: false, i18n: true, hint: One or two sentences, shown on cards and under the byline. }
+      - { name: avatar, label: Photograph, widget: image, required: false, i18n: duplicate }
+      - { name: website, label: Website, widget: string, required: false, i18n: duplicate, pattern: ['^https?://.+', 'Must start with http:// or https://'] }
+      - { name: draft, label: Hidden, widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Long biography, widget: markdown, required: false, i18n: true }
+
+  # ------------------------------------------------------------------ Pages
+  # Standing pages have fixed routes, so they are edited as named files rather
+  # than created freely. Each language is its own entry.
+  - name: pages
+    label: Pages
+    description: The About and Join Us pages.
+    editor: { preview: false }
+    files:
+      - name: about_en
+        label: About WAYU — English
+        file: src/content/pages/en/about.md
+        preview_path: about
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: description, label: Summary, widget: text, hint: Also shown in the dark band on the homepage. }
+          - { name: image, label: Image, widget: image, required: false }
+          - { name: imageAlt, label: Image description, widget: string, required: false }
+          - {
+              name: stats,
+              label: Key figures,
+              widget: list,
+              required: false,
+              fields:
+                [
+                  { name: value, label: Figure, widget: string },
+                  { name: label, label: Caption, widget: string },
+                ],
+            }
+          - {
+              name: highlights,
+              label: Highlight blocks,
+              widget: list,
+              required: false,
+              fields:
+                [
+                  { name: title, label: Title, widget: string },
+                  { name: body, label: Text, widget: text },
+                ],
+            }
+          - { name: body, label: Text, widget: markdown }
+
+      - name: about_tr
+        label: WAYU Nedir — Türkçe
+        file: src/content/pages/tr/about.md
+        preview_path: tr/about
+        fields:
+          - { name: title, label: Başlık, widget: string }
+          - { name: description, label: Özet, widget: text, hint: Anasayfadaki koyu bantta da gösterilir. }
+          - { name: image, label: Görsel, widget: image, required: false }
+          - { name: imageAlt, label: Görsel açıklaması, widget: string, required: false }
+          - {
+              name: stats,
+              label: Rakamlar,
+              widget: list,
+              required: false,
+              fields:
+                [
+                  { name: value, label: Rakam, widget: string },
+                  { name: label, label: Açıklama, widget: string },
+                ],
+            }
+          - {
+              name: highlights,
+              label: Öne çıkan bloklar,
+              widget: list,
+              required: false,
+              fields:
+                [
+                  { name: title, label: Başlık, widget: string },
+                  { name: body, label: Metin, widget: text },
+                ],
+            }
+          - { name: body, label: Metin, widget: markdown }
+
+      - name: join_en
+        label: Join Us — English
+        file: src/content/pages/en/join.md
+        preview_path: join
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: description, label: Summary, widget: text }
+          - { name: image, label: Image, widget: image, required: false }
+          - { name: imageAlt, label: Image description, widget: string, required: false }
+          - {
+              name: highlights,
+              label: Highlight blocks,
+              widget: list,
+              required: false,
+              fields:
+                [
+                  { name: title, label: Title, widget: string },
+                  { name: body, label: Text, widget: text },
+                ],
+            }
+          - { name: body, label: Text, widget: markdown }
+
+      - name: join_tr
+        label: Bize Katıl — Türkçe
+        file: src/content/pages/tr/join.md
+        preview_path: tr/join
+        fields:
+          - { name: title, label: Başlık, widget: string }
+          - { name: description, label: Özet, widget: text }
+          - { name: image, label: Görsel, widget: image, required: false }
+          - { name: imageAlt, label: Görsel açıklaması, widget: string, required: false }
+          - {
+              name: highlights,
+              label: Öne çıkan bloklar,
+              widget: list,
+              required: false,
+              fields:
+                [
+                  { name: title, label: Başlık, widget: string },
+                  { name: body, label: Metin, widget: text },
+                ],
+            }
+          - { name: body, label: Metin, widget: markdown }

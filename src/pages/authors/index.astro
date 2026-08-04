@@ -1,0 +1,13 @@
+---
+import AuthorsIndex from '../../views/AuthorsIndex.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<AuthorsIndex
+  lang={lang}
+  title={t('nav.authors')}
+  description="The comrades who write for WAYU, from member organisations on six continents."
+/>

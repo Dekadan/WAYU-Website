@@ -1,0 +1,106 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import EmptyState from '../components/EmptyState.astro';
+import { localisePath, useTranslations, type Lang } from '../i18n/utils';
+import { entryUrl, entrySlug, getSection } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  author: CollectionEntry<'authors'>;
+}
+
+const { lang, author } = Astro.props;
+const t = useTranslations(lang);
+const { name, role, organization, country, bio, avatar, website } = author.data;
+const detail = [role, organization, country].filter(Boolean).join(' · ');
+
+const slug = entrySlug(author);
+const articles = (await getSection('articles', lang)).filter(
+  (article) => (article.data as { author?: string }).author === slug,
+);
+
+const { Content } = await render(author);
+---
+
+<BaseLayout lang={lang} title={name} description={bio ?? detail} image={avatar}>
+  <section class="border-b border-[var(--border)] bg-[var(--surface-sunken)]">
+    <div class="container-page py-14 sm:py-20">
+      <p class="eyebrow text-[var(--accent)]">{t('author.profile')}</p>
+
+      <div class="mt-6 flex flex-col gap-7 sm:flex-row sm:items-center sm:gap-9">
+        {
+          avatar ? (
+            <img
+              src={avatar}
+              alt=""
+              class="size-28 shrink-0 rounded-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+          ) : (
+            <span class="grid size-28 shrink-0 place-items-center rounded-full bg-[var(--accent)] font-display text-4xl font-bold text-[var(--accent-contrast)]">
+              {name.trim().charAt(0).toUpperCase()}
+            </span>
+          )
+        }
+
+        <div>
+          <h1 class="headline text-4xl sm:text-5xl">{name}</h1>
+          {detail && <p class="mt-3 text-[var(--text-muted)]">{detail}</p>}
+          {
+            website && (
+              <a
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="eyebrow link-underline mt-3 inline-block text-[var(--accent)]"
+              >
+                {website.replace(/^https?:\/\//, '')}
+              </a>
+            )
+          }
+        </div>
+      </div>
+
+      {bio && <p class="mt-8 max-w-2xl font-serif text-lg leading-relaxed text-[var(--text-muted)]">{bio}</p>}
+    </div>
+  </section>
+
+  <div class="container-page py-14">
+    <div class="mx-auto max-w-[46rem] prose-wayu">
+      <Content />
+    </div>
+  </div>
+
+  <section class="container-page pb-8">
+    <SectionHeading title={t('author.articles')} />
+    {
+      articles.length > 0 ? (
+        <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {articles.map((entry) => (
+            <Card
+              lang={lang}
+              href={entryUrl('articles', entry)}
+              title={entry.data.title}
+              description={entry.data.description}
+              image={entry.data.image}
+              imageAlt={entry.data.imageAlt}
+              date={entry.data.date}
+              kicker={t('home.articles')}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyState message={t('author.noArticles')} />
+      )
+    }
+
+    <a href={localisePath('/authors', lang)} class="eyebrow link-underline mt-12 inline-block text-[var(--accent)]">
+      ← {t('post.back')}
+    </a>
+  </section>
+</BaseLayout>

@@ -1,0 +1,41 @@
+---
+import { render } from 'astro:content';
+import PostLayout from '../layouts/PostLayout.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+import { findAuthor, getRelated, type Section, type SectionEntry } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  section: Section;
+  entry: SectionEntry;
+}
+
+const { lang, section, entry } = Astro.props;
+const t = useTranslations(lang);
+
+const labels: Record<Section, string> = {
+  articles: t('nav.articles'),
+  statements: t('nav.statements'),
+  news: t('nav.news'),
+  documents: t('nav.documents'),
+};
+
+const [author, related] = await Promise.all([
+  findAuthor((entry.data as { author?: string }).author, lang),
+  getRelated(section, entry, lang),
+]);
+
+const { Content } = await render(entry);
+---
+
+<PostLayout
+  lang={lang}
+  section={section}
+  sectionLabel={labels[section]}
+  entry={entry}
+  author={author}
+  related={related}
+  body={entry.body}
+>
+  <Content />
+</PostLayout>

@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from 'astro';
+import AuthorDetail from '../../../views/AuthorDetail.astro';
+import { getAuthors, entrySlug } from '../../../lib/content';
+
+export const getStaticPaths = (async () => {
+  const authors = await getAuthors('tr');
+  return authors.map((author) => ({
+    params: { slug: entrySlug(author) },
+    props: { author },
+  }));
+}) satisfies GetStaticPaths;
+
+const { author } = Astro.props;
+---
+
+<AuthorDetail lang="tr" author={author} />

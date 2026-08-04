@@ -1,0 +1,9 @@
+---
+import StandingPage from '../views/StandingPage.astro';
+import { useTranslations } from '../i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<StandingPage lang={lang} slug="about" fallbackTitle={t('nav.about')} />

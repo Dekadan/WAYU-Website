@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Card from '../components/Card.astro';
+import EmptyState from '../components/EmptyState.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+import { entryUrl, findAuthor, getSection, type Section } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  section: Section;
+  title: string;
+  description?: string;
+}
+
+const { lang, section, title, description } = Astro.props;
+const t = useTranslations(lang);
+
+const entries = await getSection(section, lang);
+
+const cards = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    author:
+      section === 'articles'
+        ? await findAuthor((entry.data as { author?: string }).author, lang)
+        : undefined,
+  })),
+);
+
+/* Every tag in use, so readers can see the range of subjects at a glance. */
+const tags = [...new Set(entries.flatMap((entry) => entry.data.tags))].sort((a, b) =>
+  a.localeCompare(b, lang),
+);
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <PageHeader eyebrow={t('site.name')} title={title} description={description} />
+
+  <div class="container-page py-14">
+    {
+      tags.length > 1 && (
+        <div class="mb-12 flex flex-wrap gap-2" data-tag-filter>
+          <button
+            type="button"
+            data-tag="*"
+            aria-pressed="true"
+            class="eyebrow rounded-full border border-[var(--border-strong)] px-4 py-2.5 transition aria-pressed:border-[var(--accent)] aria-pressed:bg-[var(--accent)] aria-pressed:text-[var(--accent-contrast)]"
+          >
+            {t('list.all')}
+          </button>
+          {tags.map((tag) => (
+            <button
+              type="button"
+              data-tag={tag}
+              aria-pressed="false"
+              class="eyebrow rounded-full border border-[var(--border-strong)] px-4 py-2.5 transition hover:border-[var(--accent)] aria-pressed:border-[var(--accent)] aria-pressed:bg-[var(--accent)] aria-pressed:text-[var(--accent-contrast)]"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      cards.length > 0 ? (
+        <div class="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-entry-grid>
+          {cards.map(({ entry, author }) => (
+            <div data-tags={entry.data.tags.join('|')}>
+              <Card
+                lang={lang}
+                href={entryUrl(section, entry)}
+                title={entry.data.title}
+                description={entry.data.description}
+                image={entry.data.image}
+                imageAlt={entry.data.imageAlt}
+                date={entry.data.date}
+                kicker={(entry.data as { issuedBy?: string }).issuedBy}
+                author={author?.data.name}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState message={t('list.empty')} />
+      )
+    }
+
+    <p class="mt-12 hidden text-center text-[var(--text-muted)]" data-no-matches>
+      {t('list.empty')}
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const filter = document.querySelector<HTMLElement>('[data-tag-filter]');
+  const grid = document.querySelector<HTMLElement>('[data-entry-grid]');
+  const noMatches = document.querySelector<HTMLElement>('[data-no-matches]');
+
+  filter?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-tag]');
+    if (!button || !grid) return;
+
+    const selected = button.dataset.tag;
+    filter
+      .querySelectorAll<HTMLButtonElement>('[data-tag]')
+      .forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+
+    let visible = 0;
+    grid.querySelectorAll<HTMLElement>('[data-tags]').forEach((item) => {
+      const tags = (item.dataset.tags ?? '').split('|').filter(Boolean);
+      const show = selected === '*' || tags.includes(selected!);
+      item.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    if (noMatches) noMatches.hidden = visible > 0;
+  });
+</script>

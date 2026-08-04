@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { authorUrl } from '../lib/content';
+
+interface Props {
+  author: CollectionEntry<'authors'>;
+  size?: 'sm' | 'md';
+  link?: boolean;
+}
+
+const { author, size = 'md', link = true } = Astro.props;
+const { name, role, organization, country, avatar } = author.data;
+const detail = [role, organization, country].filter(Boolean).join(' · ');
+const dimension = size === 'sm' ? 'size-9' : 'size-12';
+const Tag = link ? 'a' : 'div';
+---
+
+<Tag
+  href={link ? authorUrl(author.id) : undefined}
+  class="group inline-flex items-center gap-3"
+>
+  {
+    avatar ? (
+      <img
+        src={avatar}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class:list={[dimension, 'shrink-0 rounded-full object-cover']}
+      />
+    ) : (
+      <span
+        class:list={[
+          dimension,
+          'grid shrink-0 place-items-center rounded-full bg-[var(--accent)] font-display font-bold text-[var(--accent-contrast)]',
+        ]}
+      >
+        {name.trim().charAt(0).toUpperCase()}
+      </span>
+    )
+  }
+  <span class="flex flex-col leading-tight">
+    <span
+      class:list={[
+        'font-display font-bold',
+        size === 'sm' ? 'text-sm' : 'text-[0.95rem]',
+        link && 'transition group-hover:text-[var(--accent)]',
+      ]}
+    >
+      {name}
+    </span>
+    {detail && <span class="mt-0.5 text-xs text-[var(--text-faint)]">{detail}</span>}
+  </span>
+</Tag>

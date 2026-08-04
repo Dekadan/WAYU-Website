@@ -1,0 +1,108 @@
+---
+import Logo from './Logo.astro';
+import { localisePath, useTranslations, type Lang } from '../i18n/utils';
+import { social, contactEmail } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const sections = [
+  { path: '/statements', label: t('nav.statements') },
+  { path: '/articles', label: t('nav.articles') },
+  { path: '/news', label: t('nav.news') },
+  { path: '/documents', label: t('nav.documents') },
+];
+
+const about = [
+  { path: '/about', label: t('nav.about') },
+  { path: '/authors', label: t('nav.authors') },
+  { path: '/join', label: t('nav.join') },
+];
+---
+
+<footer class="mt-24 bg-[var(--masthead)] text-[var(--masthead-text)]">
+  <div class="h-0.5 w-full bg-[var(--accent)]"></div>
+
+  <div class="container-page grid gap-12 py-14 md:grid-cols-2 lg:grid-cols-4">
+    <div class="lg:col-span-2">
+      <Logo size={44}>
+        <Fragment slot="subtitle">{lang === 'tr' ? 'Anti-Emperyalist Gençlik' : 'Anti-Imperialist Youth'}</Fragment>
+      </Logo>
+      <p class="mt-5 max-w-sm text-sm leading-relaxed opacity-70">
+        {t('site.fullName')} — {t('site.tagline')}.
+      </p>
+      <a
+        href={`mailto:${contactEmail}`}
+        class="link-underline mt-5 inline-block text-sm opacity-80 hover:opacity-100"
+      >
+        {contactEmail}
+      </a>
+    </div>
+
+    <div>
+      <h2 class="eyebrow opacity-50">{t('footer.sections')}</h2>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {
+          sections.map((link) => (
+            <li>
+              <a href={localisePath(link.path, lang)} class="opacity-75 transition hover:opacity-100">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="eyebrow opacity-50">{t('footer.about')}</h2>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        {
+          about.map((link) => (
+            <li>
+              <a href={localisePath(link.path, lang)} class="opacity-75 transition hover:opacity-100">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/rss.xml" class="opacity-75 transition hover:opacity-100">{t('footer.rss')}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div
+      class="container-page flex flex-col-reverse items-center justify-between gap-5 py-6 text-xs opacity-60 sm:flex-row"
+    >
+      <p>© {year} {t('site.fullName')}. {t('footer.rights')}</p>
+
+      <ul class="flex items-center gap-4">
+        {
+          social.map((item) => (
+            <li>
+              <a
+                href={item.url}
+                rel="me noopener noreferrer"
+                target="_blank"
+                aria-label={item.name}
+                class="block transition hover:opacity-100"
+              >
+                <svg class="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d={item.icon} />
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

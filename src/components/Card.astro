@@ -1,0 +1,122 @@
+---
+import { formatDate, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  date?: Date;
+  kicker?: string;
+  author?: string;
+  lang: Lang;
+  /**
+   * `lead` is the oversized homepage headline, `feature` a large grid item,
+   * `compact` a text-only row for dense lists.
+   */
+  variant?: 'lead' | 'feature' | 'compact';
+  class?: string;
+}
+
+const {
+  href,
+  title,
+  description,
+  image,
+  imageAlt,
+  date,
+  kicker,
+  author,
+  lang,
+  variant = 'feature',
+  class: className = '',
+} = Astro.props;
+
+const t = useTranslations(lang);
+
+const titleSize = {
+  lead: 'text-3xl sm:text-4xl lg:text-[2.75rem]',
+  feature: 'text-xl sm:text-[1.35rem]',
+  compact: 'text-base',
+}[variant];
+
+const aspect = variant === 'lead' ? 'aspect-[16/9]' : 'aspect-[3/2]';
+---
+
+<article class:list={['group flex flex-col', className]}>
+  {
+    variant !== 'compact' && (
+      <a href={href} tabindex="-1" aria-hidden="true" class="block overflow-hidden bg-[var(--surface-sunken)]">
+        <div class:list={[aspect, 'relative w-full']}>
+          {image ? (
+            <img
+              src={image}
+              alt={imageAlt ?? ''}
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-[1.03]"
+            />
+          ) : (
+            /*
+             * Posts often go up without a picture. Rather than a blank grey
+             * box, fall back to the emblem on the masthead colour so the slot
+             * reads as designed and grids stay aligned.
+             */
+            <div class="absolute inset-0 grid place-items-center bg-[var(--masthead)]">
+              <svg
+                class="size-2/5 max-w-32 text-[var(--accent)] opacity-45"
+                viewBox="0 0 48 48"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+                aria-hidden="true"
+              >
+                <circle cx="24" cy="24" r="21" />
+                <ellipse cx="24" cy="24" rx="8.5" ry="21" />
+                <ellipse cx="24" cy="24" rx="15" ry="21" />
+                <path d="M3.4 16h41.2M3 24h42M3.4 32h41.2" />
+              </svg>
+            </div>
+          )}
+        </div>
+      </a>
+    )
+  }
+
+  <div class:list={['flex flex-1 flex-col', variant !== 'compact' && 'pt-4']}>
+    {
+      (kicker || date) && (
+        <div class="eyebrow flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[var(--accent)]">
+          {kicker && <span>{kicker}</span>}
+          {kicker && date && <span class="text-[var(--text-faint)] opacity-50">/</span>}
+          {date && (
+            <time datetime={date.toISOString()} class="font-medium text-[var(--text-faint)]">
+              {formatDate(date, lang)}
+            </time>
+          )}
+        </div>
+      )
+    }
+
+    <h3 class:list={['headline mt-2.5', titleSize]}>
+      <a href={href} class="transition group-hover:text-[var(--accent)]">
+        <span class:list={[variant === 'lead' ? '' : 'clamp-3']}>{title}</span>
+      </a>
+    </h3>
+
+    {
+      description && variant !== 'compact' && (
+        <p class="clamp-3 mt-3 text-[0.95rem] leading-relaxed text-[var(--text-muted)]">{description}</p>
+      )
+    }
+
+    {
+      author && (
+        <p class="eyebrow mt-3.5 text-[var(--text-faint)]">
+          {t('post.by')} <span class="text-[var(--text-muted)]">{author}</span>
+        </p>
+      )
+    }
+  </div>
+</article>

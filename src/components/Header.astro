@@ -1,0 +1,150 @@
+---
+import Logo from './Logo.astro';
+import LanguagePicker from './LanguagePicker.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { localisePath, stripLang, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const here = stripLang(Astro.url.pathname);
+
+const links = [
+  { path: '/about', label: t('nav.about') },
+  { path: '/statements', label: t('nav.statements') },
+  { path: '/articles', label: t('nav.articles') },
+  { path: '/authors', label: t('nav.authors') },
+  { path: '/news', label: t('nav.news') },
+  { path: '/documents', label: t('nav.documents') },
+];
+
+const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
+---
+
+<header class="sticky top-0 z-50 bg-[var(--masthead)] text-[var(--masthead-text)]">
+  <div class="container-page">
+    <div class="flex h-[4.25rem] items-center justify-between gap-4">
+      <a href={localisePath('/', lang)} class="flex items-center" aria-label={t('site.fullName')}>
+        <Logo size={36}>
+          <Fragment slot="subtitle">{lang === 'tr' ? 'Anti-Emperyalist Gençlik' : 'Anti-Imperialist Youth'}</Fragment>
+        </Logo>
+      </a>
+
+      <nav class="hidden items-center gap-1 lg:flex" aria-label={t('nav.menu')}>
+        {
+          links.map((link) => (
+            <a
+              href={localisePath(link.path, lang)}
+              aria-current={isActive(link.path) ? 'page' : undefined}
+              class:list={[
+                'eyebrow relative px-3 py-2 transition',
+                isActive(link.path)
+                  ? 'text-[var(--masthead-text)] after:absolute after:inset-x-3 after:bottom-0.5 after:h-0.5 after:bg-[var(--accent)]'
+                  : 'opacity-70 hover:opacity-100',
+              ]}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <div class="hidden sm:block"><LanguagePicker lang={lang} /></div>
+        <ThemeToggle />
+        <a
+          href={localisePath('/join', lang)}
+          class="eyebrow hidden rounded-full bg-[var(--accent)] px-4 py-2.5 text-[var(--accent-contrast)] transition hover:brightness-110 md:inline-block"
+        >
+          {t('nav.join')}
+        </a>
+
+        <button
+          type="button"
+          data-menu-open
+          class="grid size-9 place-items-center rounded-full border border-white/20 transition hover:bg-white/10 lg:hidden"
+          aria-label={t('nav.menu')}
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-0.5 w-full bg-[var(--accent)]"></div>
+</header>
+
+<!-- Mobile navigation -->
+<div
+  id="mobile-menu"
+  data-menu-panel
+  hidden
+  class="fixed inset-0 z-60 bg-[var(--masthead)] text-[var(--masthead-text)] lg:hidden"
+>
+  <div class="container-page flex h-[4.25rem] items-center justify-between">
+    <Logo size={36}>
+      <Fragment slot="subtitle">{lang === 'tr' ? 'Anti-Emperyalist Gençlik' : 'Anti-Imperialist Youth'}</Fragment>
+    </Logo>
+    <button
+      type="button"
+      data-menu-close
+      class="grid size-9 place-items-center rounded-full border border-white/20 transition hover:bg-white/10"
+      aria-label={t('nav.close')}
+    >
+      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="container-page mt-6 flex flex-col" aria-label={t('nav.menu')}>
+    {
+      [{ path: '/', label: t('nav.home') }, ...links].map((link) => (
+        <a
+          href={localisePath(link.path, lang)}
+          class="headline border-b border-white/10 py-4 text-2xl transition hover:text-[var(--accent)]"
+        >
+          {link.label}
+        </a>
+      ))
+    }
+    <a
+      href={localisePath('/join', lang)}
+      class="eyebrow mt-8 rounded-full bg-[var(--accent)] px-5 py-4 text-center text-[var(--accent-contrast)]"
+    >
+      {t('nav.join')}
+    </a>
+    <div class="mt-8"><LanguagePicker lang={lang} /></div>
+  </nav>
+</div>
+
+<script>
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+  const openButton = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closeButton = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+
+  const setOpen = (open: boolean) => {
+    if (!panel || !openButton) return;
+    panel.hidden = !open;
+    openButton.setAttribute('aria-expanded', String(open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) closeButton?.focus();
+    else openButton.focus();
+  };
+
+  openButton?.addEventListener('click', () => setOpen(true));
+  closeButton?.addEventListener('click', () => setOpen(false));
+  panel?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && panel && !panel.hidden) setOpen(false);
+  });
+</script>

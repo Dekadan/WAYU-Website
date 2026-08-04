@@ -1,0 +1,14 @@
+---
+import SectionIndex from '../../../views/SectionIndex.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const lang = 'tr' as const;
+const t = useTranslations(lang);
+---
+
+<SectionIndex
+  lang={lang}
+  section="statements"
+  title={t('nav.statements')}
+  description="Dünya Anti-Emperyalist Gençlik Birliği ve üye örgütlerinin resmî açıklamaları."
+/>

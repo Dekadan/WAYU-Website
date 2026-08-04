@@ -1,0 +1,14 @@
+---
+import SectionIndex from '../../views/SectionIndex.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<SectionIndex
+  lang={lang}
+  section="statements"
+  title={t('nav.statements')}
+  description="Official positions of the World Anti-Imperialist Youth Union and its member organisations."
+/>
