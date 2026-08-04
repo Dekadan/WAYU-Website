@@ -24,6 +24,12 @@ const base = {
   /** Pinned to the top of the homepage. */
   featured: z.boolean().default(false),
   draft: z.boolean().default(false),
+  /**
+   * Where the text was first published. Member organisations often carry a
+   * WAYU statement before we do, and that credit belongs on every section.
+   */
+  source: z.string().optional(),
+  sourceUrl: z.url().optional(),
 };
 
 /** Opinion pieces and analysis, written by named authors. */
@@ -57,8 +63,6 @@ const news = defineCollection({
   schema: z.object({
     ...base,
     location: z.string().optional(),
-    source: z.string().optional(),
-    sourceUrl: z.url().optional(),
   }),
 });
 

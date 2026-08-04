@@ -7,6 +7,7 @@ bio: >-
   Bu örnek bir yazar profilidir. Gerçek bir yazarla değiştirin ya da kendi
   yazarlarınızı ekledikten sonra panelden silin.
 avatar: ""
+draft: true
 ---
 
 Alanların altındaki bu metin, özgeçmişin uzun hâlidir. Yazarın kendi

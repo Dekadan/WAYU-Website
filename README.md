@@ -139,19 +139,37 @@ yok ama büyük dosyalar siteyi yavaşlatır — fotoğrafları yüklemeden önc
 
 ---
 
-## 4. Site ilk yayına girmeden önce
+## 4. Sitedeki mevcut içerik
 
-Depoda alanların nasıl çalıştığını gösteren **örnek içerikler** var. Hepsinin
-başlığında "Sample / Örnek" geçiyor. Panelden silin:
+Site boş değil; **gerçek WAYU materyaliyle** dolduruldu. Hepsi TGB'nin
+sitesinden alındı ve her kaydın altında kaynak bağlantısı var:
 
-- Statements → *Sample statement* (EN + TR)
-- Articles → *Sample article* (EN + TR)
-- News → *Sample news item* (EN + TR)
-- Authors → *Sample Author* (EN + TR)
-- Documents → *Constitution of WAYU* — silmeyin, **tüzüğün gerçek metnini
-  yapıştırın**
+| Bölüm | İçerik | Tarih |
+| --- | --- | --- |
+| Açıklamalar | Filistin Gençlik Zirvesi Sonuç Bildirgesi (tam metin) | 19.11.2025 |
+| Açıklamalar | Yeni Zelanda saldırısı üzerine açıklama | 16.03.2019 |
+| Haberler | Filistin'deki Soykırıma Karşı Uluslararası Gençlik Zirvesi | 19.11.2025 |
+| Haberler | İstanbul'daki Uluslararası Antiemperyalist Gençlik Şöleni | 25.05.2026 |
+| Haberler | General Kasım Süleymani anısına konferans | 02.01.2021 |
+| Haberler | Hindistan çiftçi ayaklanması konferansı | 19.01.2021 |
 
-Ayrıca kontrol edilecekler:
+Hepsi İngilizce ve Türkçe olarak girildi. Metinler kaynaktan birebir ya da
+sadık bir çeviriyle aktarıldı — uydurma içerik yok.
+
+**Yazılar ve Yazarlar bölümü kasten boş.** Oraya uluslararası yazarlarınızın
+metinleri girecek. Alanların nasıl çalıştığını gösteren birer örnek kayıt
+panelde **taslak** olarak duruyor; ilk gerçek yazınızı girdikten sonra silin.
+
+### Görsellerin hakları
+
+Görseller `tgb.gen.tr`den alındı ve `public/uploads/` altında duruyor. TGB bir
+WAYU üyesi olduğu ve içerikler WAYU'nun kendi faaliyetleri olduğu için bu makul
+görünüyor, **ama kullanım hakkını yine de teyit edin.** Elinizde bu
+etkinliklerin orijinal fotoğrafları varsa panelden değiştirin — özellikle
+İstanbul şöleni görseli kaynağında düşük çözünürlüklü (398 piksel), yerine
+yüksek çözünürlüklü bir kare koymanız iyi olur.
+
+### Ayrıca kontrol edilecekler:
 
 - [ ] `src/lib/site.ts` — iletişim e-postası ve sosyal medya hesapları.
       Buradaki adresler tahmini olarak dolduruldu, **doğrulayın**.

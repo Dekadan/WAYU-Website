@@ -8,6 +8,7 @@ author: sample-author
 tags:
   - örnek
 featured: false
+draft: true
 ---
 
 **Bu örnek bir içeriktir. Site yayına girmeden önce panelden silin.**

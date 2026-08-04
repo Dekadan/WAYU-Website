@@ -7,6 +7,7 @@ bio: >-
   This is an example author profile. Replace it with a real contributor, or
   delete it from the admin panel once you have added your own authors.
 avatar: ""
+draft: true
 ---
 
 The text below the fields is the long version of the biography. It is shown on

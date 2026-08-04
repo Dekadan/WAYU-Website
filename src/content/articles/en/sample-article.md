@@ -8,6 +8,7 @@ author: sample-author
 tags:
   - sample
 featured: false
+draft: true
 ---
 
 **This is example content. Delete it from the admin panel before the site goes live.**
