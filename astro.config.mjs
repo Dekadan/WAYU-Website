@@ -3,9 +3,10 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// Canonical public URL of the site. Override per-deployment with the SITE_URL
-// environment variable (Netlify/Vercel/Cloudflare all let you set this).
-const site = process.env.SITE_URL ?? 'https://wayouthunion.org';
+// Canonical public URL of the site. This is where the site actually lives
+// today; point SITE_URL at the real domain once WAYU owns one, so canonical
+// tags, social cards and the RSS feed follow without a code change.
+const site = process.env.SITE_URL ?? 'https://wayouthunion.netlify.app';
 
 export default defineConfig({
   site,

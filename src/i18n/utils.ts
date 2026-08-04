@@ -25,9 +25,25 @@ export function localisePath(path: string, lang: Lang): string {
   return clean === '/' ? `/${lang}` : `/${lang}${clean}`;
 }
 
+/**
+ * Normalises a built path back to the URL visitors actually use.
+ *
+ * With `build.format: 'file'` Astro reports `/about.html` (and `/index.html`
+ * for the homepage) during the build, while the host serves those at `/about`
+ * and `/`. Canonical tags, hreflang alternates and nav active-state all compare
+ * against the served form, so everything runs through here first.
+ */
+export function cleanPath(pathname: string): string {
+  let path = pathname;
+  if (path.endsWith('/index.html')) path = path.slice(0, -'index.html'.length);
+  else if (path.endsWith('.html')) path = path.slice(0, -'.html'.length);
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  return path === '' ? '/' : path;
+}
+
 /** Strips the locale prefix so a path can be re-localised into another language. */
 export function stripLang(pathname: string): string {
-  const parts = pathname.split('/').filter(Boolean);
+  const parts = cleanPath(pathname).split('/').filter(Boolean);
   if (parts[0] && parts[0] in ui) parts.shift();
   return `/${parts.join('/')}`;
 }

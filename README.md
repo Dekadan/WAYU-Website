@@ -36,32 +36,57 @@ depoya commit olarak gider.
 
 ---
 
-## 2. Siteyi yayına alma
+## 2. Yayın durumu
 
-Site statiktir; herhangi bir statik barındırmada çalışır. **Netlify öneriliyor,**
-çünkü panelin giriş sistemi (Netlify Identity) ek kurulum gerektirmez.
+**Site yayında: https://wayouthunion.netlify.app**
 
-### Netlify (önerilen)
+Netlify projesi kuruldu (`wayouthunion`, hesap: tahakucukuygun) ve mevcut
+sürüm elle yüklendi. Geriye iki adım kaldı ve **ikisi de Netlify arayüzünden
+yapılmalı** — API ile yapılamıyor.
 
-1. Netlify'da **Add new site → Import an existing project** ile bu depoyu bağlayın.
-   `netlify.toml` zaten yapılandırılmış: komut `npm run build`, klasör `dist`.
-2. Site ayarlarında **Identity**'yi etkinleştirin.
-3. **Identity → Services → Git Gateway**'i etkinleştirin.
-4. **Identity → Registration** ayarını **Invite only** yapın. (Aksi hâlde herkes
-   kayıt olup içerik yazabilir.)
-5. **Identity → Invite users** ile yazı girecek arkadaşları e-postayla davet edin.
-6. Davet e-postasındaki bağlantıya tıklayan kişi `/admin` panelinde açılır.
+### Kalan adım 1: Depoyu bağla (panel bunsuz çalışmaz)
 
-**Alan adı:** Netlify'da **Domain management** bölümünden `wayouthunion.org`
-(ya da hangi alan adını kullanacaksanız) ekleyin. Ardından iki yeri güncelleyin:
+Netlify → **Site configuration → Build & deploy → Continuous deployment →
+Link repository** → GitHub → `Dekadan/WAYU-Website` → dal `main`.
 
-- `astro.config.mjs` içindeki `site` değeri — veya Netlify'da `SITE_URL`
-  ortam değişkenini tanımlayın (kodu değiştirmeden çalışır).
-- `public/robots.txt` içindeki `Sitemap:` satırı.
+Build komutu `npm run build`, yayın klasörü `dist` (zaten `netlify.toml`'da).
+
+Bu bağlantı olmadan panelden yapılan değişiklikler depoya yazılamaz ve site
+kendiliğinden yenilenmez. Bağlandıktan sonra her `main` push'u siteyi otomatik
+günceller.
+
+### Kalan adım 2: Panelin girişini aç
+
+1. Netlify → **Identity** → **Enable Identity**
+2. **Identity → Services → Git Gateway** → **Enable**
+3. **Identity → Registration** → **Invite only**
+   (aksi hâlde herkes kayıt olup içerik yazabilir)
+4. **Identity → Invite users** ile yazı girecek arkadaşları davet edin
+5. Davet bağlantısına tıklayan kişi doğrudan `/admin` panelinde açılır
+
+### Alan adı
+
+Şu an `wayouthunion.netlify.app` üzerinde. Kendi alan adınızı alınca:
+
+1. Netlify → **Domain management** → alan adını ekleyin
+2. `astro.config.mjs` içindeki `site` değerini yeni alan adıyla değiştirin —
+   ya da Netlify'da `SITE_URL` ortam değişkenini tanımlayın
+3. `public/robots.txt` içindeki `Sitemap:` satırını güncelleyin
+
+> `wayouthunion.com` elden çıkmış; şu an o adreste bir kumar sitesi var.
+> Geri almayı düşünüyorsanız ayrıca ele almak gerekir.
 
 > **Not:** `wayouthunion.com` alan adı elden çıkmış durumda; şu anda o adreste
 > bir kumar sitesi yayın yapıyor. Eski alan adını geri almayı düşünüyorsanız
 > bunu ayrıca ele almak gerekir.
+
+### Netlify hesabında yapılan bir ayar değişikliği
+
+Netlify yeni ücretsiz hesaplarda **tüm siteleri giriş arkasına alan** bir koruma
+(`site_sso_login`) açık başlatıyor; site bu yüzden herkese 401 döndürüyordu.
+Siteyi yayına almak için bu ayar hesap düzeyinde kapatıldı. Sitelerinizi tekrar
+gizlemek isterseniz Netlify → **Team settings → Site protection** üzerinden geri
+açabilirsiniz.
 
 ### Netlify yerine başka bir yer (Cloudflare Pages, Vercel, GitHub Pages)
 
