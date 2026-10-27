@@ -1,0 +1,22 @@
+---
+import type { GetStaticPaths } from 'astro';
+import AuthorDetail from '../../../views/AuthorDetail.astro';
+import { getAuthors, entrySlug, entryLang } from '../../../lib/content';
+import { prefixedLangs, type Lang } from '../../../i18n/utils';
+
+export const getStaticPaths = (async () => {
+  const perLang = await Promise.all(
+    prefixedLangs.map(async (lang) =>
+      (await getAuthors(lang))
+        .filter((author) => entryLang(author) === lang)
+        .map((author) => ({ params: { lang, slug: entrySlug(author) }, props: { author } })),
+    ),
+  );
+  return perLang.flat();
+}) satisfies GetStaticPaths;
+
+const { author } = Astro.props;
+const lang = Astro.params.lang as Lang;
+---
+
+<AuthorDetail lang={lang} author={author} />

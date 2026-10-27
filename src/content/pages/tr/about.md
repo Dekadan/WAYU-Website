@@ -1,50 +1,58 @@
 ---
-title: WAYU Nedir?
+title: Biz Kimiz
 description: >-
-  WAYU (Dünya Anti-Emperyalist Gençlik Birliği), dünya çapında emperyalizme
-  karşı mücadele eden gençlik örgütlerini ortak bir çatı altında buluşturan
-  uluslararası bir birliktir.
+  Anti-emperyalist gençliğin çatı örgütü. WAYU, her kıtadan ulusal
+  anti-emperyalist gençlik örgütlerini emperyalizme karşı birleştiriyor.
+image: /uploads/history/founding-2014.jpg
+imageAlt: WAYU’nun 2014’te İstanbul’daki kuruluş kongresinde sahnede yumruk kaldıran delegeler
 stats:
   - value: "2014"
-    label: İstanbul'da kuruldu
-  - value: "40+"
-    label: Üye gençlik örgütü
-  - value: "25"
-    label: Ülke
-  - value: "6"
-    label: Kıta
+    label: 29 Ekim’de İstanbul’da kuruldu
+  - value: "200+"
+    label: 2018 İstanbul buluşmasında delege
+  - value: "20+"
+    label: WAYU 2026 konferansında ülke
+  - value: "22"
+    label: 2018 İstanbul buluşmasında ülke
 highlights:
-  - title: Bağımsızlık
+  - title: Filistin
     body: >-
-      Halkların bağımsızlığını, egemenlik haklarını ve kendi kaderini tayin
-      hakkını her koşulda savunuruz.
-  - title: Ortak Eylem
+      WAYU, Filistin davasının başarısı için büyük çaba gösterdi ve Filistinli
+      örgütleri ortak bir platformda birleştirme girişimlerini destekledi.
+  - title: Direniş Ekseni
     body: >-
-      Bu birlik yalnızca ortak bir söylemden ibaret değildir; ortak eylemi,
-      ortak üretimi ve ortak bir gelecek arayışını temsil eder.
-  - title: Enternasyonal Dayanışma
+      Direniş Ekseni ile Batılı uluslar arasında ilişkiler kurulmasına
+      aracılık etti ve bu mücadelenin dünyada daha iyi anlaşılması için
+      çalıştı.
+  - title: Venezuela
     body: >-
-      Dünyanın farklı coğrafyalarındaki ilerici gençlik örgütleriyle yeni bir
-      enternasyonal dayanışma geleneği inşa ediyoruz.
+      Venezuela’nın baskıya karşı mücadelesini her zaman destekledi ve
+      Bolivarcı düşüncenin önemini sürekli dile getirdi.
+  - title: Küba ve Latin Amerika
+    body: >-
+      Küba’yı hedef alan ekonomik ve askerî ablukaya karşı en kararlı tavrı
+      aldı; Latin Amerika ülkelerinin egemenliğini yeni Monroe Doktrini’ne
+      karşı savundu.
+  - title: NATO
+    body: >-
+      Bütün toplantılarında NATO’nun yayılmacı politikalarını teşhir etti ve
+      Rusya’nın haklı savaşını savundu.
+  - title: Doğu Asya
+    body: >-
+      Doğu Asya uluslarının egemenliğini tehdit eden QUAD gibi ittifaklara
+      her zaman karşı çıktı.
 ---
 
-WAYU (World Anti-Imperialist Youth Union — Dünya Anti-Emperyalist Gençlik Birliği), dünya çapında emperyalizme karşı mücadele eden gençlik örgütlerini ortak bir çatı altında buluşturan uluslararası bir birliktir.
+Amerikan emperyalizminin dünyanın dört bir yanında gelişmekte olan ulusların egemenliğini tehdit ettiği koşullarda, dünya anti-emperyalist kamuoyunu örgütlemek ve harekete geçirmek devrimci bir görevdir. WAYU, bu amaçla, dünyadaki anti-emperyalist örgütleri emperyalizme karşı birleştirmek hedefiyle 29 Ekim 2014’te kuruldu.
 
-Kıtalar arası bir dayanışma ağı kurmayı amaçlayan WAYU, halkların bağımsızlığını, egemenlik haklarını ve kendi kaderini tayin hakkını savunan gençlik hareketlerini bir araya getirir, ortak mücadele zeminini güçlendirir.
+WAYU, dünyanın her yerindeki ulusal anti-emperyalist gençlik örgütlerinden oluşan bir çatı örgütüdür; yazışma dili İngilizcedir. Kuruluşundan bu yana Amerikan emperyalizmine karşı çok sayıda eylem, konferans ve webinar düzenledi. Gelişmekte olan ulusların gençliği arasında anti-emperyalist ve sömürgecilik karşıtı bir bilincin gelişmesi için etkin biçimde çalıştı.
 
-Emperyalist saldırganlığa, sömürüye ve savaşa karşı sesini yükselten WAYU, dünyanın farklı coğrafyalarındaki ilerici ve anti-emperyalist gençlik örgütleriyle kurduğu bağlarla yeni bir enternasyonal dayanışma geleneği inşa etmeyi hedefler.
+Yıllar içinde WAYU, dünya gençliğini her dönemin emperyalist tehditlerine karşı bir araya getiren birleştirici bir rol üstlendi. Bu çerçevede emperyalist tehditlerin tartışıldığı ve sorunlara çözüm arandığı büyük konferanslar düzenlendi.
 
-Bu birlik, yalnızca ortak bir söylemden ibaret değildir; ortak eylemi, ortak üretimi ve ortak bir gelecek arayışını temsil eder. WAYU, gençliğin emperyalizme karşı direnişte tarihsel bir sorumluluk taşıdığı bilinciyle hareket eder ve dünyanın dört bir yanındaki kardeş örgütlerle omuz omuza mücadelesini sürdürür.
+## Şiar ve simge
 
-## Nasıl kuruldu?
+WAYU, **“Yurtta Barış, Dünyada Barış!”** şiarıyla kuruldu. Simgesi, emperyalist uçaklara direnen ezilen ulusların yumruğudur.
 
-WAYU, 29 Ekim 2014'te İstanbul'da, 12 ülkeden 23 gençlik örgütünün katılımıyla kuruldu. 2018'deki ikinci kongresinden bu yana birlik, 6 kıtada 25 ülkeden 40'a yakın anti-emperyalist gençlik örgütünü temsil ediyor.
+## Duruşumuz
 
-> Bu sayfadaki kuruluş bilgilerini kendi arşivinizle karşılaştırıp panelden güncelleyin.
-
-## Ne yapıyoruz?
-
-- **Açıklamalar yayınlıyoruz.** Emperyalist saldırganlığın her biçimine karşı, üye örgütlerimizin ortak imzasıyla tutum alıyoruz.
-- **Yazılar yayınlıyoruz.** Farklı ülkelerden yoldaşların kaleminden analizler, tartışmalar ve deneyim aktarımları.
-- **Kongreler ve buluşmalar örgütlüyoruz.** Anti-emperyalist gençliğin yüz yüze geldiği, ortak kararların alındığı zeminler.
-- **Dayanışmayı örgütlüyoruz.** Bir ülkedeki mücadele, hepimizin mücadelesidir.
+Tarihi boyunca Amerikan emperyalizmine her koşulda karşı çıkan WAYU, mücadelesini bugün de aynı çizgide sürdürüyor ve dünya gençliğini bu dava etrafında birleştirmeye devam ediyor.

@@ -1,7 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import Logo from './Logo.astro';
 import { localisePath, useTranslations, type Lang } from '../i18n/utils';
-import { social, contactEmail } from '../lib/site';
+import { social, contactEmail, dossier } from '../lib/site';
 
 interface Props {
   lang: Lang;
@@ -11,46 +12,65 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 
+/** Empty sections stay out of the menus until something is published in them. */
+const hasDocuments = (await getCollection('documents', (e) => !e.data.draft)).length > 0;
+const hasArticles = (await getCollection('articles', (e) => !e.data.draft)).length > 0;
+const hasAuthors = (await getCollection('authors', (e) => !e.data.draft)).length > 0;
+
 const sections = [
   { path: '/statements', label: t('nav.statements') },
-  { path: '/articles', label: t('nav.articles') },
+  ...(hasArticles ? [{ path: '/articles', label: t('nav.articles') }] : []),
   { path: '/news', label: t('nav.news') },
-  { path: '/documents', label: t('nav.documents') },
+  ...(hasDocuments ? [{ path: '/documents', label: t('nav.documents') }] : []),
 ];
 
 const about = [
   { path: '/about', label: t('nav.about') },
-  { path: '/authors', label: t('nav.authors') },
+  { path: '/history', label: t('nav.history') },
+  ...(hasAuthors ? [{ path: '/authors', label: t('nav.authors') }] : []),
   { path: '/join', label: t('nav.join') },
 ];
 ---
 
-<footer class="mt-24 bg-[var(--masthead)] text-[var(--masthead-text)]">
-  <div class="h-0.5 w-full bg-[var(--accent)]"></div>
+<footer class="mt-28 bg-[var(--masthead)] text-[var(--masthead-text)]">
+  <div class="h-2 w-full bg-[var(--accent)]"></div>
 
-  <div class="container-page grid gap-12 py-14 md:grid-cols-2 lg:grid-cols-4">
+  <div class="container-page pt-16 pb-12">
+    <p class="font-display text-sm font-semibold text-[var(--accent)]" lang="es">El pueblo unido jamás será vencido</p>
+    <p class="headline mt-3 max-w-3xl text-3xl sm:text-5xl">{t('footer.slogan')}</p>
+  </div>
+
+  <div class="container-page grid gap-12 pb-14 md:grid-cols-2 lg:grid-cols-4">
     <div class="lg:col-span-2">
-      <Logo size={44}>
-        <Fragment slot="subtitle">{lang === 'tr' ? 'Anti-Emperyalist Gençlik' : 'Anti-Imperialist Youth'}</Fragment>
-      </Logo>
-      <p class="mt-5 max-w-sm text-sm leading-relaxed opacity-70">
-        {t('site.fullName')} — {t('site.tagline')}.
+      <div class="flex items-center gap-4">
+        <Logo class="size-20 shrink-0" />
+        <div>
+          <p class="font-display text-xl font-bold">WAYU</p>
+          <p class="text-sm opacity-75">{t('site.fullName')}</p>
+        </div>
+      </div>
+      <p class="mt-6 max-w-sm text-sm leading-relaxed opacity-75">
+        Peace at Home, Peace in the World · <span lang="tr">Yurtta Barış, Dünyada Barış</span>
       </p>
-      <a
-        href={`mailto:${contactEmail}`}
-        class="link-underline mt-5 inline-block text-sm opacity-80 hover:opacity-100"
-      >
-        {contactEmail}
-      </a>
+      {
+        contactEmail && (
+          <a
+            href={`mailto:${contactEmail}`}
+            class="link-underline mt-4 inline-block text-sm opacity-85 hover:opacity-100"
+          >
+            {contactEmail}
+          </a>
+        )
+      }
     </div>
 
     <div>
-      <h2 class="eyebrow opacity-50">{t('footer.sections')}</h2>
-      <ul class="mt-4 space-y-2.5 text-sm">
+      <h2 class="eyebrow text-[var(--accent)]">{t('footer.sections')}</h2>
+      <ul class="mt-4 space-y-2.5 text-[0.95rem]">
         {
           sections.map((link) => (
             <li>
-              <a href={localisePath(link.path, lang)} class="opacity-75 transition hover:opacity-100">
+              <a href={localisePath(link.path, lang)} class="opacity-80 transition hover:opacity-100">
                 {link.label}
               </a>
             </li>
@@ -60,27 +80,34 @@ const about = [
     </div>
 
     <div>
-      <h2 class="eyebrow opacity-50">{t('footer.about')}</h2>
-      <ul class="mt-4 space-y-2.5 text-sm">
+      <h2 class="eyebrow text-[var(--accent)]">{t('footer.about')}</h2>
+      <ul class="mt-4 space-y-2.5 text-[0.95rem]">
         {
           about.map((link) => (
             <li>
-              <a href={localisePath(link.path, lang)} class="opacity-75 transition hover:opacity-100">
+              <a href={localisePath(link.path, lang)} class="opacity-80 transition hover:opacity-100">
                 {link.label}
               </a>
             </li>
           ))
         }
+        {
+          dossier && (
+            <li>
+              <a href={dossier.pdf} class="opacity-80 transition hover:opacity-100">{t('home.dossier')}</a>
+            </li>
+          )
+        }
         <li>
-          <a href="/rss.xml" class="opacity-75 transition hover:opacity-100">{t('footer.rss')}</a>
+          <a href={localisePath('/rss.xml', lang)} class="opacity-80 transition hover:opacity-100">{t('footer.rss')}</a>
         </li>
       </ul>
     </div>
   </div>
 
-  <div class="border-t border-white/10">
+  <div class="bg-black/25">
     <div
-      class="container-page flex flex-col-reverse items-center justify-between gap-5 py-6 text-xs opacity-60 sm:flex-row"
+      class="container-page flex flex-col-reverse items-center justify-between gap-5 py-6 text-xs opacity-75 sm:flex-row"
     >
       <p>© {year} {t('site.fullName')}. {t('footer.rights')}</p>
 
@@ -93,7 +120,7 @@ const about = [
                 rel="me noopener noreferrer"
                 target="_blank"
                 aria-label={item.name}
-                class="block transition hover:opacity-100"
+                class="block transition hover:text-[var(--accent)]"
               >
                 <svg class="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d={item.icon} />

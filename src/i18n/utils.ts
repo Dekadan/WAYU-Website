@@ -1,6 +1,11 @@
-import { defaultLang, ui, type Lang, type UIKey } from './ui';
+import { defaultLang, languages, rtlLangs, ui, type Lang, type UIKey } from './ui';
 
-export { defaultLang, languages, type Lang } from './ui';
+export { defaultLang, languages, rtlLangs, type Lang } from './ui';
+
+/** Every language except the default, i.e. the ones with a `/xx/` prefix. */
+export const prefixedLangs = (Object.keys(languages) as Lang[]).filter((l) => l !== defaultLang);
+
+export const dirOf = (lang: Lang): 'rtl' | 'ltr' => (rtlLangs.includes(lang) ? 'rtl' : 'ltr');
 
 /** Reads the active language out of the current URL. `/tr/articles` -> `tr`. */
 export function getLangFromUrl(url: URL): Lang {
@@ -11,7 +16,7 @@ export function getLangFromUrl(url: URL): Lang {
 /** Returns a `t('nav.home')` helper bound to one language. */
 export function useTranslations(lang: Lang) {
   return function t(key: UIKey): string {
-    return ui[lang][key] ?? ui[defaultLang][key];
+    return (ui[lang] as Record<string, string | undefined>)[key] ?? ui.en[key];
   };
 }
 
@@ -48,7 +53,33 @@ export function stripLang(pathname: string): string {
   return `/${parts.join('/')}`;
 }
 
-const dateLocales: Record<Lang, string> = { en: 'en-GB', tr: 'tr-TR' };
+const dateLocales: Record<Lang, string> = {
+  en: 'en-GB',
+  tr: 'tr-TR',
+  ar: 'ar-u-nu-latn',
+  es: 'es-ES',
+  ru: 'ru-RU',
+  it: 'it-IT',
+  fr: 'fr-FR',
+  pt: 'pt-BR',
+  // Gregorian calendar, not the Solar Hijri default of fa-IR.
+  fa: 'fa-IR-u-ca-gregory',
+  zh: 'zh-CN',
+};
+
+/** Open Graph locale codes. */
+export const ogLocales: Record<Lang, string> = {
+  en: 'en_GB',
+  tr: 'tr_TR',
+  ar: 'ar_AR',
+  es: 'es_ES',
+  ru: 'ru_RU',
+  it: 'it_IT',
+  fr: 'fr_FR',
+  pt: 'pt_BR',
+  fa: 'fa_IR',
+  zh: 'zh_CN',
+};
 
 export function formatDate(date: Date, lang: Lang): string {
   return new Intl.DateTimeFormat(dateLocales[lang], {
@@ -57,6 +88,11 @@ export function formatDate(date: Date, lang: Lang): string {
     year: 'numeric',
     timeZone: 'UTC',
   }).format(date);
+}
+
+/** "5 min" in the reader's language. */
+export function formatMinutes(minutes: number, lang: Lang): string {
+  return new Intl.NumberFormat(dateLocales[lang], { style: 'unit', unit: 'minute', unitDisplay: 'short' }).format(minutes);
 }
 
 export function isoDate(date: Date): string {

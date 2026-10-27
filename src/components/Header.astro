@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import Logo from './Logo.astro';
 import LanguagePicker from './LanguagePicker.astro';
 import ThemeToggle from './ThemeToggle.astro';
@@ -6,44 +7,65 @@ import { localisePath, stripLang, useTranslations, type Lang } from '../i18n/uti
 
 interface Props {
   lang: Lang;
+  availableLangs?: Lang[];
 }
 
-const { lang } = Astro.props;
+const { lang, availableLangs } = Astro.props;
 const t = useTranslations(lang);
 const here = stripLang(Astro.url.pathname);
 
+/** Empty sections stay out of the menus until something is published in them. */
+const hasDocuments = (await getCollection('documents', (e) => !e.data.draft)).length > 0;
+const hasArticles = (await getCollection('articles', (e) => !e.data.draft)).length > 0;
+const hasAuthors = (await getCollection('authors', (e) => !e.data.draft)).length > 0;
+
 const links = [
   { path: '/about', label: t('nav.about') },
+  { path: '/history', label: t('nav.history') },
   { path: '/statements', label: t('nav.statements') },
-  { path: '/articles', label: t('nav.articles') },
-  { path: '/authors', label: t('nav.authors') },
+  ...(hasArticles ? [{ path: '/articles', label: t('nav.articles') }] : []),
   { path: '/news', label: t('nav.news') },
-  { path: '/documents', label: t('nav.documents') },
+  ...(hasDocuments ? [{ path: '/documents', label: t('nav.documents') }] : []),
 ];
+
+/** On the homepage the pennant hangs down over the hero photo, as in the booklet. */
+const onHome = here === '/';
 
 const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
 ---
 
-<header class="sticky top-0 z-50 bg-[var(--masthead)] text-[var(--masthead-text)]">
-  <div class="container-page">
-    <div class="flex h-[4.25rem] items-center justify-between gap-4">
-      <a href={localisePath('/', lang)} class="flex items-center" aria-label={t('site.fullName')}>
-        <Logo size={36}>
-          <Fragment slot="subtitle">{lang === 'tr' ? 'Anti-Emperyalist Gençlik' : 'Anti-Imperialist Youth'}</Fragment>
-        </Logo>
+<header
+  data-header
+  data-hero={onHome ? '' : undefined}
+  class="group/header sticky top-0 z-50 bg-[var(--surface)]/95 backdrop-blur-md"
+>
+  <div class="h-2 w-full bg-[var(--accent)]"></div>
+  <div class="container-page relative">
+    <a
+      href={localisePath('/', lang)}
+      aria-label={t('site.fullName')}
+      class="pennant absolute start-5 top-0 z-10 w-[3.6rem] origin-top transition-[width] duration-300 md:start-8 md:w-[4.1rem]"
+    >
+      <Logo variant="pennant" class="aspect-[100/128] w-full" />
+    </a>
+
+    <div class="bar flex h-[4.25rem] items-center justify-between gap-4 ps-[4.6rem] transition-[padding] duration-300 md:ps-[5.4rem]">
+      <a href={localisePath('/', lang)} class="hidden flex-col leading-tight xl:flex" tabindex="-1">
+        <span class="font-display text-[1.05rem] font-bold">WAYU</span>
+        <span class="text-[0.72rem] text-[var(--text-muted)]">{t('site.fullName')}</span>
       </a>
 
-      <nav class="hidden items-center gap-1 lg:flex" aria-label={t('nav.menu')}>
+      <nav class="hidden items-center gap-0.5 lg:flex" aria-label={t('nav.menu')}>
         {
           links.map((link) => (
             <a
               href={localisePath(link.path, lang)}
               aria-current={isActive(link.path) ? 'page' : undefined}
               class:list={[
-                'eyebrow relative px-3 py-2 transition',
+                'relative rounded-full px-3.5 py-2 font-display text-[0.95rem] font-medium whitespace-nowrap transition',
                 isActive(link.path)
-                  ? 'text-[var(--masthead-text)] after:absolute after:inset-x-3 after:bottom-0.5 after:h-0.5 after:bg-[var(--accent)]'
-                  : 'opacity-70 hover:opacity-100',
+                  ? 'bg-[var(--surface-sunken)] text-[var(--text)]'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text)]',
               ]}
             >
               {link.label}
@@ -52,12 +74,12 @@ const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
         }
       </nav>
 
-      <div class="flex items-center gap-2">
-        <div class="hidden sm:block"><LanguagePicker lang={lang} /></div>
-        <ThemeToggle />
+      <div class="ms-auto flex items-center gap-2">
+        <div class="hidden sm:block"><LanguagePicker lang={lang} available={availableLangs} /></div>
+        <ThemeToggle lang={lang} />
         <a
           href={localisePath('/join', lang)}
-          class="eyebrow hidden rounded-full bg-[var(--accent)] px-4 py-2.5 text-[var(--accent-contrast)] transition hover:brightness-110 md:inline-block"
+          class="hidden rounded-full bg-[var(--accent)] px-5 py-2.5 font-display text-[0.95rem] font-semibold whitespace-nowrap text-[var(--accent-contrast)] transition hover:brightness-105 md:inline-block"
         >
           {t('nav.join')}
         </a>
@@ -65,7 +87,7 @@ const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
         <button
           type="button"
           data-menu-open
-          class="grid size-9 place-items-center rounded-full border border-white/20 transition hover:bg-white/10 lg:hidden"
+          class="grid size-10 place-items-center rounded-full border border-[var(--border)] transition hover:bg-[var(--surface-sunken)] lg:hidden"
           aria-label={t('nav.menu')}
           aria-expanded="false"
           aria-controls="mobile-menu"
@@ -77,25 +99,49 @@ const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
       </div>
     </div>
   </div>
-
-  <div class="h-0.5 w-full bg-[var(--accent)]"></div>
 </header>
+
+<style>
+  /* The big hanging pennant only at the top of the homepage; it tucks in once you scroll. */
+  [data-hero]:not([data-scrolled]) .pennant {
+    width: 5.25rem;
+  }
+  [data-hero]:not([data-scrolled]) .bar {
+    padding-inline-start: 6.25rem;
+  }
+  @media (min-width: 768px) {
+    [data-hero]:not([data-scrolled]) .pennant {
+      width: 7.5rem;
+    }
+    [data-hero]:not([data-scrolled]) .bar {
+      padding-inline-start: 9rem;
+    }
+  }
+  [data-scrolled] {
+    box-shadow: 0 1px 0 var(--border);
+  }
+</style>
 
 <!-- Mobile navigation -->
 <div
   id="mobile-menu"
   data-menu-panel
   hidden
-  class="fixed inset-0 z-60 bg-[var(--masthead)] text-[var(--masthead-text)] lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label={t('nav.menu')}
+  class="fixed inset-0 z-60 overflow-y-auto bg-[var(--masthead)] text-[var(--masthead-text)] lg:hidden"
 >
+  <div class="h-2 w-full bg-[var(--accent)]"></div>
   <div class="container-page flex h-[4.25rem] items-center justify-between">
-    <Logo size={36}>
-      <Fragment slot="subtitle">{lang === 'tr' ? 'Anti-Emperyalist Gençlik' : 'Anti-Imperialist Youth'}</Fragment>
-    </Logo>
+    <span class="flex items-center gap-3">
+      <Logo class="size-11" />
+      <span class="font-display text-lg font-bold">WAYU</span>
+    </span>
     <button
       type="button"
       data-menu-close
-      class="grid size-9 place-items-center rounded-full border border-white/20 transition hover:bg-white/10"
+      class="grid size-10 place-items-center rounded-full border border-white/20 transition hover:bg-white/10"
       aria-label={t('nav.close')}
     >
       <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -109,7 +155,7 @@ const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
       [{ path: '/', label: t('nav.home') }, ...links].map((link) => (
         <a
           href={localisePath(link.path, lang)}
-          class="headline border-b border-white/10 py-4 text-2xl transition hover:text-[var(--accent)]"
+          class="headline py-3.5 text-[1.75rem] transition hover:text-[var(--accent)]"
         >
           {link.label}
         </a>
@@ -117,11 +163,11 @@ const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
     }
     <a
       href={localisePath('/join', lang)}
-      class="eyebrow mt-8 rounded-full bg-[var(--accent)] px-5 py-4 text-center text-[var(--accent-contrast)]"
+      class="mt-8 rounded-full bg-[var(--accent)] px-5 py-4 text-center font-display text-lg font-semibold text-[var(--accent-contrast)]"
     >
       {t('nav.join')}
     </a>
-    <div class="mt-8"><LanguagePicker lang={lang} /></div>
+    <div class="mt-8 pb-10"><LanguagePicker lang={lang} available={availableLangs} /></div>
   </nav>
 </div>
 
@@ -144,6 +190,11 @@ const isActive = (path: string) => here === path || here.startsWith(`${path}/`);
   panel?.addEventListener('click', (event) => {
     if ((event.target as HTMLElement).closest('a')) setOpen(false);
   });
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const onScroll = () => header?.toggleAttribute('data-scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && panel && !panel.hidden) setOpen(false);
   });

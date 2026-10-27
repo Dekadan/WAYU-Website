@@ -1,23 +1,30 @@
 ---
 interface Props {
   title: string;
+  lead?: string;
   href?: string;
   viewAllLabel?: string;
   as?: 'h2' | 'h3';
 }
 
-const { title, href, viewAllLabel, as: Tag = 'h2' }: Props = Astro.props;
+const { title, lead, href, viewAllLabel, as: Tag = 'h2' }: Props = Astro.props;
 ---
 
-<div class="mb-7 flex items-end justify-between gap-6 border-b-2 border-[var(--text)] pb-3">
-  <Tag class="headline text-2xl sm:text-[1.75rem]">{title}</Tag>
+<div class="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+  <div>
+    <Tag class="headline flex items-center gap-3 text-[1.9rem] sm:text-[2.4rem]">
+      <span class="h-[0.8em] w-2.5 shrink-0 rounded-[3px] bg-[var(--accent)]" aria-hidden="true"></span>
+      {title}
+    </Tag>
+    {lead && <p class="mt-2 ps-[1.4rem] text-[1.05rem] text-[var(--text-muted)]">{lead}</p>}
+  </div>
   {
     href && viewAllLabel && (
       <a
         href={href}
-        class="eyebrow link-underline shrink-0 pb-1 text-[var(--accent)] whitespace-nowrap"
+        class="shrink-0 rounded-full border border-[var(--border-strong)] px-4 py-2 font-display text-sm font-semibold whitespace-nowrap transition hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
       >
-        {viewAllLabel} →
+        {viewAllLabel} <span class="inline-block rtl:-scale-x-100" aria-hidden="true">→</span>
       </a>
     )
   }

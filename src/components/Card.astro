@@ -1,5 +1,5 @@
 ---
-import { formatDate, useTranslations, type Lang } from '../i18n/utils';
+import { dirOf, formatDate, useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
   href: string;
@@ -11,6 +11,8 @@ interface Props {
   kicker?: string;
   author?: string;
   lang: Lang;
+  /** Language the entry itself is written in, when it differs from the page. */
+  contentLang?: Lang;
   /**
    * `lead` is the oversized homepage headline, `feature` a large grid item,
    * `compact` a text-only row for dense lists.
@@ -29,6 +31,7 @@ const {
   kicker,
   author,
   lang,
+  contentLang,
   variant = 'feature',
   class: className = '',
 } = Astro.props;
@@ -44,10 +47,10 @@ const titleSize = {
 const aspect = variant === 'lead' ? 'aspect-[16/9]' : 'aspect-[3/2]';
 ---
 
-<article class:list={['group flex flex-col', className]}>
+<article class:list={['group flex flex-col', className]} lang={contentLang && contentLang !== lang ? contentLang : undefined} dir={contentLang ? dirOf(contentLang) : undefined}>
   {
     variant !== 'compact' && (
-      <a href={href} tabindex="-1" aria-hidden="true" class="block overflow-hidden bg-[var(--surface-sunken)]">
+      <a href={href} tabindex="-1" aria-hidden="true" class="block overflow-hidden rounded-2xl bg-[var(--surface-sunken)]">
         <div class:list={[aspect, 'relative w-full']}>
           {image ? (
             <img
@@ -63,20 +66,16 @@ const aspect = variant === 'lead' ? 'aspect-[16/9]' : 'aspect-[3/2]';
              * box, fall back to the emblem on the masthead colour so the slot
              * reads as designed and grids stay aligned.
              */
-            <div class="absolute inset-0 grid place-items-center bg-[var(--masthead)]">
-              <svg
-                class="size-2/5 max-w-32 text-[var(--accent)] opacity-45"
-                viewBox="0 0 48 48"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1"
-                aria-hidden="true"
-              >
-                <circle cx="24" cy="24" r="21" />
-                <ellipse cx="24" cy="24" rx="8.5" ry="21" />
-                <ellipse cx="24" cy="24" rx="15" ry="21" />
-                <path d="M3.4 16h41.2M3 24h42M3.4 32h41.2" />
-              </svg>
+            <div class="absolute inset-0 overflow-hidden bg-[#231f20]">
+              <div class="absolute -inset-x-6 top-[46%] h-[9%] -rotate-6 bg-[var(--accent)]" />
+              <span class="absolute start-4 top-4 grid size-12 place-items-center rounded-lg bg-white">
+                <img src="/brand/wayu-logo.png" alt="" class="size-[86%]" loading="lazy" />
+              </span>
+              {date && (
+                <span class="absolute end-5 bottom-3 font-display text-[3.4rem] leading-none font-bold text-white/90">
+                  {date.getUTCFullYear()}
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -87,9 +86,8 @@ const aspect = variant === 'lead' ? 'aspect-[16/9]' : 'aspect-[3/2]';
   <div class:list={['flex flex-1 flex-col', variant !== 'compact' && 'pt-4']}>
     {
       (kicker || date) && (
-        <div class="eyebrow flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[var(--accent)]">
-          {kicker && <span>{kicker}</span>}
-          {kicker && date && <span class="text-[var(--text-faint)] opacity-50">/</span>}
+        <div class="eyebrow flex flex-wrap items-center gap-x-2 gap-y-1">
+          {kicker && <span class="rounded-full bg-[var(--accent)] px-2.5 py-1 text-[var(--accent-contrast)]">{kicker}</span>}
           {date && (
             <time datetime={date.toISOString()} class="font-medium text-[var(--text-faint)]">
               {formatDate(date, lang)}
@@ -99,8 +97,8 @@ const aspect = variant === 'lead' ? 'aspect-[16/9]' : 'aspect-[3/2]';
       )
     }
 
-    <h3 class:list={['headline mt-2.5', titleSize]}>
-      <a href={href} class="transition group-hover:text-[var(--accent)]">
+    <h3 class:list={['headline mt-3', titleSize]}>
+      <a href={href} class="transition group-hover:text-[var(--accent-ink)]">
         <span class:list={[variant === 'lead' ? '' : 'clamp-3']}>{title}</span>
       </a>
     </h3>

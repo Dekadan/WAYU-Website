@@ -22,14 +22,14 @@ const targets = [
 ---
 
 <div class="flex flex-wrap items-center gap-2">
-  <span class="eyebrow mr-1 text-[var(--text-faint)]">{t('post.share')}</span>
+  <span class="eyebrow me-1 text-[var(--text-faint)]">{t('post.share')}</span>
   {
     targets.map((target) => (
       <a
         href={target.href}
         target="_blank"
         rel="noopener noreferrer"
-        class="eyebrow rounded-full border border-[var(--border-strong)] px-3 py-2 transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        class="eyebrow rounded-full border border-[var(--border-strong)] px-3 py-2 transition hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
       >
         {target.name}
       </a>
@@ -40,7 +40,7 @@ const targets = [
     data-copy-link
     data-url={url}
     data-copied={t('post.copied')}
-    class="eyebrow rounded-full border border-[var(--border-strong)] px-3 py-2 transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+    class="eyebrow rounded-full border border-[var(--border-strong)] px-3 py-2 transition hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
   >
     {t('post.copyLink')}
   </button>

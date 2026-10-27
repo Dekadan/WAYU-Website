@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PostDetail from '../../../views/PostDetail.astro';
+import { getOwnSection, entrySlug } from '../../../lib/content';
+import { prefixedLangs, type Lang } from '../../../i18n/utils';
+
+export const getStaticPaths = (async () => {
+  const perLang = await Promise.all(
+    prefixedLangs.map(async (lang) =>
+      (await getOwnSection('articles', lang)).map((entry) => ({
+        params: { lang, slug: entrySlug(entry) },
+        props: { entry },
+      })),
+    ),
+  );
+  return perLang.flat();
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const lang = Astro.params.lang as Lang;
+---
+
+<PostDetail lang={lang} section="articles" entry={entry} />

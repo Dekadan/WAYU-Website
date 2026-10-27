@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://wayouthunion.netlify.app/sitemap-index.xml
+Sitemap: https://waiyouthunion.com/sitemap-index.xml

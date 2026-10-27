@@ -4,7 +4,7 @@ Dünya Anti-Emperyalist Gençlik Birliği'nin resmî web sitesi.
 İki dilli (İngilizce + Türkçe), statik olarak üretilen, panelden yönetilen bir yayın sitesi.
 
 - **Teknoloji:** [Astro](https://astro.build) + Tailwind CSS 4
-- **İçerik yönetimi:** [Decap CMS](https://decapcms.org) — `/admin` adresinden
+- **İçerik yönetimi:** [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (Decap uyumlu) — `/admin` adresinden, GitHub hesabıyla
 - **Çıktı:** tamamen statik HTML; sunucu, veritabanı, aylık maliyet yok
 
 ---
@@ -38,80 +38,55 @@ depoya commit olarak gider.
 
 ## 2. Yayın durumu
 
-**Site yayında: https://wayouthunion.netlify.app**
+**Site: https://waiyouthunion.com** (önizleme kopyası
+https://wayu.bvu-dizin.workers.dev arama motorlarına kapalı)
 
-Netlify projesi kuruldu (`wayouthunion`, hesap: tahakucukuygun) ve mevcut
-sürüm elle yüklendi. Geriye iki adım kaldı ve **ikisi de Netlify arayüzünden
-yapılmalı** — API ile yapılamıyor.
+Site Cloudflare'de, statik dosya olarak yayında (Workers statik dosyaları;
+istekler ücretsiz ve sınırsız). Ayar `wrangler.jsonc` dosyasında, yayın
+klasörü `dist/`.
 
-### Kalan adım 1: Depoyu bağla (panel bunsuz çalışmaz)
+`main` dalına gelen her commit'i Cloudflare Workers Builds kendisi derleyip
+yayınlar (build `npm run build`, deploy `npx wrangler deploy`). Panelden
+kaydedilen yazı da bir commit olduğu için 1-2 dakikada sitede görünür. Elle
+yayın gerekirse:
 
-Netlify → **Site configuration → Build & deploy → Continuous deployment →
-Link repository** → GitHub → `Dekadan/WAYU-Website` → dal `main`.
-
-Build komutu `npm run build`, yayın klasörü `dist` (zaten `netlify.toml`'da).
-
-Bu bağlantı olmadan panelden yapılan değişiklikler depoya yazılamaz ve site
-kendiliğinden yenilenmez. Bağlandıktan sonra her `main` push'u siteyi otomatik
-günceller.
-
-### Kalan adım 2: Panelin girişini aç
-
-1. Netlify → **Identity** → **Enable Identity**
-2. **Identity → Services → Git Gateway** → **Enable**
-3. **Identity → Registration** → **Invite only**
-   (aksi hâlde herkes kayıt olup içerik yazabilir)
-4. **Identity → Invite users** ile yazı girecek arkadaşları davet edin
-5. Davet bağlantısına tıklayan kişi doğrudan `/admin` panelinde açılır
-
-### Alan adı
-
-Şu an `wayouthunion.netlify.app` üzerinde. Kendi alan adınızı alınca:
-
-1. Netlify → **Domain management** → alan adını ekleyin
-2. `astro.config.mjs` içindeki `site` değerini yeni alan adıyla değiştirin —
-   ya da Netlify'da `SITE_URL` ortam değişkenini tanımlayın
-3. `public/robots.txt` içindeki `Sitemap:` satırını güncelleyin
-
-> `wayouthunion.com` elden çıkmış; şu an o adreste bir kumar sitesi var.
-> Geri almayı düşünüyorsanız ayrıca ele almak gerekir.
-
-> **Not:** `wayouthunion.com` alan adı elden çıkmış durumda; şu anda o adreste
-> bir kumar sitesi yayın yapıyor. Eski alan adını geri almayı düşünüyorsanız
-> bunu ayrıca ele almak gerekir.
-
-### Netlify hesabında yapılan bir ayar değişikliği
-
-Netlify yeni ücretsiz hesaplarda **tüm siteleri giriş arkasına alan** bir koruma
-(`site_sso_login`) açık başlatıyor; site bu yüzden herkese 401 döndürüyordu.
-Siteyi yayına almak için bu ayar hesap düzeyinde kapatıldı. Sitelerinizi tekrar
-gizlemek isterseniz Netlify → **Team settings → Site protection** üzerinden geri
-açabilirsiniz.
-
-### Netlify yerine başka bir yer (Cloudflare Pages, Vercel, GitHub Pages)
-
-Site kendiliğinden çalışır (`npm run build`, `dist/` klasörünü yayınlayın).
-Yalnızca panelin girişini GitHub'a çevirmeniz gerekir — `public/admin/config.yml`
-dosyasının başındaki `backend` bloğunu şununla değiştirin:
-
-```yaml
-backend:
-  name: github
-  repo: Dekadan/WAYU-Website
-  branch: main
-  base_url: https://<oauth-sunucunuz>
+```bash
+npm run build
+npx wrangler deploy
 ```
 
-GitHub arka ucu bir OAuth aracısı ister; Decap belgelerindeki
-[GitHub backend](https://decapcms.org/docs/github-backend/) adımlarını izleyin.
-Bu yolda içerik girecek herkesin depoya yazma yetkisi olan bir GitHub hesabı
-olması gerekir — bu yüzden Netlify daha pratiktir.
+Alan adı `waiyouthunion.com` Türk Ticaret'te kayıtlı; ad sunucuları
+Cloudflare'e yönlendirildi, DNS Cloudflare'de. Eski Netlify kopyası
+(`wayouthunion.netlify.app`) yerinde duruyor, kapatılabilir.
+
+> `wayouthunion.com` (i'siz) elden çıkmış; şu an o adreste bir kumar sitesi var.
+
+### Panel girişi
+
+Panel: **https://waiyouthunion.com/admin** → **Sign In with GitHub**. Giriş,
+Sveltia'nın Cloudflare'de çalışan küçük aracı `wayu-cms-auth` üzerinden olur
+(kaynağı `~/Repos/wayu-cms-auth`, GitHub OAuth uygulaması Dekadan
+hesabında). Her kayıt depoya commit olarak gider.
+
+Yazar eklemek: kişi ücretsiz bir GitHub hesabı açar; depo sahibi
+GitHub → `Dekadan/WAYU-Website` → **Settings → Collaborators → Add people**
+ile kullanıcı adını ekler, kişi davet e-postasını kabul eder. Yetki aynı
+yerden kaldırılır. Yazar teknik olarak kodu da değiştirebilir; her değişiklik
+geçmişte kayıtlı ve geri alınabilir.
+
+### İsim kuralı
+
+Yürütme Kurulu ve diğer sayfalarda Avrupa ve ABD'deki bazı kişilerin adları
+yayımlanmaz. Bu bölgelerden bir adı eklemeden önce sorun. Tanıtım
+kitapçığının (PDF) bütün üyeleri sayan sürümü bu yüzden sitede yok; herkese
+açık bir sürüm hazır olunca `src/lib/site.ts` içindeki `dossier` değerini
+doldurun, indirme bağlantıları kendiliğinden geri gelir.
 
 ---
 
 ## 3. İçerik nasıl girilir
 
-Panel `/admin` adresinde. Altı bölüm var:
+Panel `/admin` adresinde. Yedi bölüm var:
 
 | Bölüm | Ne için | Nerede görünür |
 | --- | --- | --- |
@@ -121,6 +96,7 @@ Panel `/admin` adresinde. Altı bölüm var:
 | **Documents** (Ana Belgeler) | Tüzük, bildirge, kongre kararları | `/documents` |
 | **Authors** (Yazarlar) | Yazar profilleri | `/authors` |
 | **Pages** (Sayfalar) | "WAYU Nedir" ve "Bize Katıl" sayfaları | `/about`, `/join` |
+| **History** (Tarihçe) | Kongre, heyet, webinar ve eylemler; her etkinlik ayrı kayıt | `/history` |
 
 ### İki dil
 
@@ -134,9 +110,9 @@ dil için ayrı kayıt olarak listelenir.
 
 ### Yayın akışı
 
-Panel **editöryel akış** ile çalışır: kaydettiğiniz içerik önce **taslak**
-olur, "Ready" ve ardından "Publish" dediğinizde yayına girer. Yayınlandığı anda
-depoya commit gider ve site yeniden üretilir (Netlify'da ~1 dakika).
+Panelde kaydettiğiniz anda depoya commit gider. Depo Cloudflare'e bağlıysa
+site kendiliğinden yeniden üretilir (~1 dakika); bağlı değilse
+`npx wrangler deploy` ile yayına çıkar.
 
 Bir içeriği yayından kaldırmadan gizlemek için **Draft** kutusunu işaretleyin.
 

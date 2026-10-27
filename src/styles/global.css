@@ -1,110 +1,100 @@
 @import 'tailwindcss';
 
-@import '@fontsource-variable/archivo/wght.css';
+@import '@fontsource-variable/outfit/wght.css';
+@import '@fontsource-variable/onest/wght.css';
+@import '@fontsource-variable/vazirmatn/wght.css';
 @import '@fontsource-variable/source-serif-4/opsz.css';
 
 @theme {
-  --font-display: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+  /* One stack for every language: each script falls through to the first face that has it. */
+  --font-display: 'Outfit Variable', 'Onest Variable', 'Vazirmatn Variable', ui-sans-serif, system-ui,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-sans: var(--font-display);
+  --font-serif: 'Source Serif 4 Variable', 'Vazirmatn Variable', Georgia, 'Times New Roman', 'Songti SC',
+    'Noto Serif SC', serif;
 
-  /* WAYU palette: the red of the banner, the black of print, paper behind it. */
-  --color-flag-50: #fff1f1;
-  --color-flag-100: #ffdfdf;
-  --color-flag-200: #ffc5c5;
-  --color-flag-300: #ff9d9d;
-  --color-flag-400: #f95d5d;
-  --color-flag-500: #e42a2a;
-  --color-flag-600: #d21f26;
-  --color-flag-700: #b0161d;
-  --color-flag-800: #91161d;
-  --color-flag-900: #79191e;
-  --color-flag-950: #42080b;
-
-  --color-ink-50: #f6f6f5;
-  --color-ink-100: #e7e7e5;
-  --color-ink-200: #d1d1cd;
-  --color-ink-300: #b0b0a9;
-  --color-ink-400: #88887f;
-  --color-ink-500: #6d6d64;
-  --color-ink-600: #575751;
-  --color-ink-700: #474743;
-  --color-ink-800: #3b3b38;
-  --color-ink-900: #262624;
-  --color-ink-950: #141413;
-
-  --color-paper: #faf8f5;
+  /* WAYU palette, taken from the introduction booklet: banner orange, print ink, paper. */
+  --color-orange: #f7941d;
+  --color-ink: #231f20;
+  --color-paper: #ffffff;
 }
 
 /*
   Themeable surface tokens. The light values are the default; the dark values
   are applied both by the OS preference and by an explicit `data-theme`, so the
   header toggle can override the system in either direction.
+
+  --accent is the banner orange used for fills (buttons, bands, stripes).
+  --accent-ink is the same hue dark enough to read as text on the surface.
 */
 :root {
   color-scheme: light;
-  --surface: #faf8f5;
+  --surface: #ffffff;
   --surface-raised: #ffffff;
-  --surface-sunken: #f1efea;
-  --border: #e2ded6;
-  --border-strong: #cdc8bd;
-  --text: #141413;
-  --text-muted: #5f5d57;
-  --text-faint: #86837c;
-  --accent: #c2181f;
-  --accent-contrast: #ffffff;
-  --masthead: #141413;
-  --masthead-text: #faf8f5;
+  --surface-sunken: #f6f3ef;
+  --border: #e8e2da;
+  --border-strong: #cfc7bc;
+  --text: #231f20;
+  --text-muted: #57514f;
+  --text-faint: #6c6461;
+  --accent: #f7941d;
+  --accent-ink: #a65800;
+  --accent-contrast: #231f20;
+  --masthead: #231f20;
+  --masthead-text: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --surface: #131312;
-    --surface-raised: #1c1c1a;
-    --surface-sunken: #0d0d0c;
-    --border: #2e2e2b;
-    --border-strong: #43433f;
-    --text: #f2f0ec;
-    --text-muted: #a8a59d;
-    --text-faint: #7d7a73;
-    --accent: #fa4d54;
-    --accent-contrast: #16100f;
-    --masthead: #0d0d0c;
-    --masthead-text: #f7f5f1;
+    --surface: #1b1819;
+    --surface-raised: #252122;
+    --surface-sunken: #141213;
+    --border: #3a3435;
+    --border-strong: #514a4b;
+    --text: #f5f1ec;
+    --text-muted: #bcb4ae;
+    --text-faint: #8d8581;
+    --accent: #f7941d;
+    --accent-ink: #fba948;
+    --accent-contrast: #231f20;
+    --masthead: #141213;
+    --masthead-text: #ffffff;
   }
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --surface: #faf8f5;
+  --surface: #ffffff;
   --surface-raised: #ffffff;
-  --surface-sunken: #f1efea;
-  --border: #e2ded6;
-  --border-strong: #cdc8bd;
-  --text: #141413;
-  --text-muted: #5f5d57;
-  --text-faint: #86837c;
-  --accent: #c2181f;
-  --accent-contrast: #ffffff;
-  --masthead: #141413;
-  --masthead-text: #faf8f5;
+  --surface-sunken: #f6f3ef;
+  --border: #e8e2da;
+  --border-strong: #cfc7bc;
+  --text: #231f20;
+  --text-muted: #57514f;
+  --text-faint: #6c6461;
+  --accent: #f7941d;
+  --accent-ink: #a65800;
+  --accent-contrast: #231f20;
+  --masthead: #231f20;
+  --masthead-text: #ffffff;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --surface: #131312;
-  --surface-raised: #1c1c1a;
-  --surface-sunken: #0d0d0c;
-  --border: #2e2e2b;
-  --border-strong: #43433f;
-  --text: #f2f0ec;
-  --text-muted: #a8a59d;
-  --text-faint: #7d7a73;
-  --accent: #fa4d54;
-  --accent-contrast: #16100f;
-  --masthead: #0d0d0c;
-  --masthead-text: #f7f5f1;
+  --surface: #1b1819;
+  --surface-raised: #252122;
+  --surface-sunken: #141213;
+  --border: #3a3435;
+  --border-strong: #514a4b;
+  --text: #f5f1ec;
+  --text-muted: #bcb4ae;
+  --text-faint: #8d8581;
+  --accent: #f7941d;
+  --accent-ink: #fba948;
+  --accent-contrast: #231f20;
+  --masthead: #141213;
+  --masthead-text: #ffffff;
 }
 
 @theme inline {
@@ -117,6 +107,7 @@
   --color-muted: var(--text-muted);
   --color-faint: var(--text-faint);
   --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
   --color-accent-contrast: var(--accent-contrast);
   --color-masthead: var(--masthead);
   --color-masthead-text: var(--masthead-text);
@@ -153,15 +144,27 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Arabic script joins letters; tracking breaks the joins. */
+  :lang(ar),
+  :lang(fa) {
+    letter-spacing: 0 !important;
+  }
+  :lang(ar) .prose-wayu,
+  :lang(fa) .prose-wayu,
+  .prose-wayu:lang(ar),
+  .prose-wayu:lang(fa) {
+    line-height: 1.95;
+  }
+
   ::selection {
     background-color: var(--accent);
     color: var(--accent-contrast);
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 3px solid var(--text);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: 4px;
   }
 }
 
@@ -175,21 +178,20 @@
   }
 }
 
-/* Uppercase, tightly tracked label used for section eyebrows and metadata. */
+/* Small bold label for section names and metadata. Sentence case, no tracking. */
 @utility eyebrow {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  line-height: 1;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.005em;
+  line-height: 1.2;
 }
 
 @utility headline {
   font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.022em;
-  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
   text-wrap: balance;
 }
 
@@ -223,8 +225,8 @@
   & h3,
   & h4 {
     font-family: var(--font-display);
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     line-height: 1.2;
     margin-top: 2.2em;
     margin-bottom: -0.4em;
@@ -242,7 +244,7 @@
   }
 
   & a {
-    color: var(--accent);
+    color: var(--accent-ink);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
@@ -346,4 +348,36 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Photo cut on the diagonal along its top edge, as in the booklet. */
+@utility cut-top {
+  clip-path: polygon(0 9%, 100% 0, 100% 100%, 0 100%);
+}
+
+@utility cut-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 4.5vw));
+}
+
+/* Orange frame with rounded corners used for inset photos. */
+@utility frame-orange {
+  border: 5px solid var(--accent);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility ticker-track {
+  animation: ticker 60s linear infinite;
+  &:hover {
+    animation-play-state: paused;
+  }
 }

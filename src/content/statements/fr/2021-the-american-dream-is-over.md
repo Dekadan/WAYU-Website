@@ -1,0 +1,23 @@
+---
+title: "Le rêve américain est terminé"
+description: "En tant qu’Union mondiale de la jeunesse anti-impérialiste (WAYU), nous déclarons que le rêve américain est désormais bel et bien terminé."
+date: 2021-01-20
+issuedBy: "Comité exécutif de WAYU"
+image: /uploads/covers/2021-the-american-dream-is-over.jpg
+imageAlt: "L’assaut contre le Capitole des États-Unis, le 6 janvier 2021"
+imageCredit: "Photo: TapTheForwardAssist / Wikimedia Commons, CC BY-SA 4.0"
+tags:
+  - "États-Unis"
+source: "wayouthunion.com (Internet Archive)"
+sourceUrl: https://web.archive.org/web/20210120173012/http://www.wayouthunion.com/the-american-dream-is-over/
+---
+
+La date du 6 janvier est un jalon qui démontre la débâcle du monde impérialiste. Sous les yeux du monde entier, le Capitole, lieu sacré de la démocratie américaine, a été pris d’assaut par un groupe d’Américains qui affirmaient que l’élection avait été truquée et scandaient « arrêtez le vol ». Les États-Unis sont désormais, aux yeux du monde, un pays incapable même d’organiser des élections dans le calme, menacé par une révolte contre son establishment et privé de son unité intérieure. Le centre de la démocratie libérale occidentale fait aujourd’hui face à la crise que les États-Unis provoquent dans d’autres pays par des moyens d’intervention impérialistes. Cette révolte est un moment historique et un événement de bon augure pour le monde entier. En tant qu’Union mondiale de la jeunesse anti-impérialiste (WAYU), nous déclarons que le rêve américain est désormais bel et bien terminé.
+
+Ce soulèvement est un symptôme de plus de la crise irrépressible qui traverse l’establishment américain, lequel reposait sur le trépied de la mondialisation néolibérale, de la financiarisation et des guerres sans fin. Ces dernières années, grâce à la résistance des nations et des peuples opprimés, les États-Unis d’Amérique ont été vaincus sur de nombreux grands fronts, ont cédé leur puissance productive à l’Asie, et leur hégémonie mondiale s’est érodée aussi bien dans le monde occidental que dans l’Est et le Sud globaux. En conséquence, les classes dirigeantes des États-Unis et la société tout entière se sont scindées en deux camps, et le pays dans son ensemble a basculé dans un climat de conflits internes et de désordre. Il est évident que la contestation du système ne se limite pas à ceux qui ont pris d’assaut le Capitole. De larges secteurs de la société, organisés ou non — notamment les manifestants de Black Lives Matter, les révolutionnaires, les anti-impérialistes et les syndicalistes —, combattent et combattront l’establishment.
+
+Le Capitole, qui abrite la Chambre des représentants des États-Unis, a été présenté comme un temple de la démocratie et le lieu saint du « monde libre » ; il est pourtant, en réalité, le centre de l’oppression et de l’asservissement de l’humanité à l’échelle mondiale. La « démocratie » qui y est représentée est celle qui a été apportée en Afghanistan, en Irak, en Syrie, en Libye et au Vietnam à la pointe des baïonnettes des soldats américains et des troupes de l’OTAN. Il est en outre le centre d’inégalités qui s’accroissent considérablement pour le peuple américain, des profits de l’oligarchie financière et des décisions impérialistes prises contre les intérêts des peuples. Que le quartier général de cette démocratie de façade ait été pris d’assaut montre l’ampleur de la fracture au sein du système américain. Avec la résistance organisée, l’unité et la solidarité croissantes dans le monde opprimé et en développement, cette hégémonie déclinante pourrait conduire à l’effondrement complet de l’impérialisme américain.
+
+L’assaut contre le Congrès a prouvé une fois de plus la réalité d’un monde multipolaire. À mesure que l’empire mondial se disloque, les États-Unis perdent leur capacité à maintenir l’unité intérieure et à contenir le mécontentement populaire. L’approfondissement de ces conflits est une bonne chose à la fois pour le peuple américain et pour le monde opprimé qui résiste aux menaces immédiates de l’impérialisme américain, ainsi que pour l’humanité tout entière, en quête de paix et de prospérité. Finalement, un climat de bouleversement mûrit, dans lequel nous expulserons tous les soldats américains de nos sols et mettrons fin à la tyrannie politique et économique ainsi qu’à l’hégémonie culturelle des États-Unis. Il est temps de prendre l’initiative et de passer à l’offensive pour un nouveau monde et une nouvelle civilisation. En tant que plateforme commune de la jeunesse anti-impérialiste du monde entier, nous appelons toutes les forces anti-impérialistes à s’unir afin de saisir les perspectives de ce moment historique.
+
+Comité exécutif de WAYU

@@ -1,0 +1,23 @@
+---
+/**
+ * The booklet's signature cut: a diagonal edge with an orange stripe running
+ * along it. Place it at the bottom of a photo or band; `fill` is the colour of
+ * whatever comes next, so the cut reads as the page continuing.
+ */
+interface Props {
+  fill?: string;
+  class?: string;
+}
+
+const { fill = 'var(--surface)', class: className = '' } = Astro.props;
+---
+
+<svg
+  class:list={['pointer-events-none absolute inset-x-0 bottom-[-1px] h-[clamp(2rem,5vw,4.5rem)] w-full', className]}
+  viewBox="0 0 100 12"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+>
+  <polygon points="0,8.5 100,0 100,3.2 0,11.7" fill="var(--accent)"></polygon>
+  <polygon points="0,11.7 100,3.2 100,12 0,12" fill={fill}></polygon>
+</svg>

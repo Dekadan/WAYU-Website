@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import StandingPage from '../../views/StandingPage.astro';
+import { prefixedLangs, useTranslations, type Lang } from '../../i18n/utils';
+
+export const getStaticPaths = (() => prefixedLangs.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+---
+
+<StandingPage lang={lang} slug="about" fallbackTitle={t('nav.about')} />

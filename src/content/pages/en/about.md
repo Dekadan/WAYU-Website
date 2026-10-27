@@ -1,50 +1,60 @@
 ---
-title: What is WAYU?
+title: Who We Are
 description: >-
-  WAYU (World Anti-Imperialist Youth Union) is an international union that
-  brings together, under a common roof, the youth organisations fighting
-  against imperialism across the world.
+  A roof organization of anti-imperialist youth. WAYU unites national
+  anti-imperialist youth organizations from every continent against
+  imperialism.
+image: /uploads/history/founding-2014.jpg
+imageAlt: Delegates raising their fists on stage at the founding congress of WAYU in Istanbul, 2014
 stats:
   - value: "2014"
-    label: Founded in Istanbul
-  - value: "40+"
-    label: Member youth organisations
-  - value: "25"
-    label: Countries
-  - value: "6"
-    label: Continents
+    label: Founded in Istanbul, 29 October
+  - value: "200+"
+    label: Delegates at the 2018 Istanbul gathering
+  - value: "20+"
+    label: Countries at the WAYU 2026 conference
+  - value: "22"
+    label: Countries at the 2018 Istanbul gathering
 highlights:
-  - title: Independence
+  - title: Palestine
     body: >-
-      We defend the independence of peoples, their sovereign rights and their
-      right to self-determination, under all circumstances.
-  - title: Common Action
+      WAYU has made substantial efforts toward the success of the Palestinian
+      Cause and has supported initiatives to unite Palestinian organizations on
+      a common platform.
+  - title: Axis of Resistance
     body: >-
-      This union is not merely a shared discourse; it stands for common action,
-      common production and the search for a common future.
-  - title: Internationalist Solidarity
+      It has facilitated the establishment of relations between the Axis of
+      Resistance and Western nations, and has striven to foster a greater
+      global understanding of its struggle.
+  - title: Venezuela
     body: >-
-      Together with progressive youth organisations in every geography, we are
-      building a new tradition of internationalist solidarity.
+      It has consistently supported Venezuela’s struggle against coercion and
+      has continuously articulated the significance of Bolivarian thought.
+  - title: Cuba & Latin America
+    body: >-
+      It has taken the firmest stance against the economic and military
+      blockade targeting Cuba and has defended the sovereignty of Latin
+      American countries against the new Monroe Doctrine.
+  - title: NATO
+    body: >-
+      In all of its assemblies, it has exposed the expansionist policies of
+      NATO and defended Russia’s justified war.
+  - title: East Asia
+    body: >-
+      It has consistently opposed alliances such as the QUAD, which threaten
+      the sovereignty of East Asian nations.
 ---
 
-WAYU — the World Anti-Imperialist Youth Union — is an international union that brings together, under a common roof, the youth organisations fighting against imperialism across the world.
+In circumstances where American imperialism threatens the sovereignty of developing nations across the globe, organizing and mobilizing the global anti-imperialist public is a revolutionary duty. To this end, WAYU was established on 29 October 2014, with the objective of uniting anti-imperialist organizations worldwide against imperialism.
 
-Aiming to build a network of solidarity across continents, WAYU unites the youth movements that defend the independence of peoples, their sovereign rights and their right to self-determination, and strengthens the ground on which a common struggle can be waged.
+WAYU is a roof organization consisting of national anti-imperialist youth organizations all over the world, and its correspondence language is English. Since its inception, WAYU has organized numerous demonstrations, conferences, and webinars opposing American imperialism. It has actively worked to cultivate an anti-imperialist and anti-colonial consciousness among the youth of developing nations.
 
-Raising its voice against imperialist aggression, exploitation and war, WAYU seeks to build a new tradition of internationalist solidarity through the bonds it establishes with progressive and anti-imperialist youth organisations in every geography of the world.
+Over the years, WAYU has played a unifying role in bringing the global youth together against the imperialist threats of every era. Within this framework, large-scale conferences were held where imperialist threats were discussed and solutions to problems were sought.
 
-This union is not merely a shared discourse; it stands for common action, common production and the search for a common future. WAYU acts in the consciousness that the youth carries a historic responsibility in the resistance against imperialism, and it continues its struggle shoulder to shoulder with fraternal organisations in every corner of the world.
+## Motto and symbol
 
-## How it was founded
+WAYU was founded under the motto **“Peace at Home, Peace in the World!”** (Yurtta Barış, Dünyada Barış!). Its symbol is the fist of oppressed nations resisting imperialist aircraft.
 
-WAYU was founded on 29 October 2014 in Istanbul, with the participation of 23 youth organisations from 12 countries. Since its second congress in 2018, the union has represented close to 40 anti-imperialist youth organisations from 25 countries across 6 continents.
+## Where we stand
 
-> Check these founding figures against your own archive and update this page from the admin panel.
-
-## What we do
-
-- **We publish statements.** Against every form of imperialist aggression, we take a position under the common signature of our member organisations.
-- **We publish articles.** Analysis, debate and shared experience from comrades in different countries.
-- **We organise congresses and meetings.** The ground on which anti-imperialist youth meet face to face and take common decisions.
-- **We organise solidarity.** A struggle in one country is a struggle for all of us.
+Having opposed American imperialism in every context throughout its history, WAYU presently sustains its struggle along the same trajectory and continues to unite the youth of the world toward this cause.

@@ -1,0 +1,17 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# The workers.dev address is only a preview: waiyouthunion.com is the site.
+https://:sub.bvu-dizin.workers.dev/*
+  X-Robots-Tag: noindex
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/uploads/*
+  Cache-Control: public, max-age=86400
+
+/brand/*
+  Cache-Control: public, max-age=86400

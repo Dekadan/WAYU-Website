@@ -1,10 +1,10 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import AuthorDetail from '../../views/AuthorDetail.astro';
-import { getAuthors, entrySlug } from '../../lib/content';
+import { getAuthors, entrySlug, entryLang } from '../../lib/content';
 
 export const getStaticPaths = (async () => {
-  const authors = await getAuthors('en');
+  const authors = (await getAuthors('en')).filter((a) => entryLang(a) === 'en');
   return authors.map((author) => ({
     params: { slug: entrySlug(author) },
     props: { author },

@@ -20,6 +20,8 @@ const base = {
   /** Path under /public, e.g. `/uploads/istanbul-congress.jpg`. */
   image: z.string().optional(),
   imageAlt: z.string().optional(),
+  /** Attribution for a photo that needs one, e.g. "Photo: Jane Doe / Wikimedia Commons, CC BY 4.0". */
+  imageCredit: z.string().optional(),
   tags: z.array(z.string()).default([]),
   /** Pinned to the top of the homepage. */
   featured: z.boolean().default(false),
@@ -104,6 +106,28 @@ const pages = defineCollection({
   }),
 });
 
+/**
+ * WAYU's own record: congresses, delegations, webinars and actions, shown as
+ * one timeline on /history. Each event is its own entry, never merged.
+ */
+const history = defineCollection({
+  loader: localised('history'),
+  schema: z.object({
+    title: z.string(),
+    /** Used for ordering; only shown when `dateLabel` is empty. */
+    date: z.coerce.date(),
+    /** Shown instead of the date when only the year or a range is known, e.g. "17–23 March 2018". */
+    dateLabel: z.string().optional(),
+    place: z.string().optional(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    gallery: z
+      .array(z.object({ src: z.string(), alt: z.string().default(''), caption: z.string().optional() }))
+      .default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
 /** Contributor profiles, shown on article bylines and the authors index. */
 const authors = defineCollection({
   loader: localised('authors'),
@@ -119,4 +143,4 @@ const authors = defineCollection({
   }),
 });
 
-export const collections = { articles, statements, news, documents, authors, pages };
+export const collections = { articles, statements, news, documents, authors, pages, history };

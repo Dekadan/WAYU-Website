@@ -1,0 +1,48 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { committee, type CommitteeTranslation } from '../data/committee';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const translations = import.meta.glob<{ default: CommitteeTranslation }>('../data/committee/*.ts', { eager: true });
+const local = translations[`../data/committee/${lang}.ts`]?.default ?? {};
+const countryOf = (m: (typeof committee)[number]) => local[m.name]?.country ?? m.country[lang] ?? m.country.en;
+const roleOf = (m: (typeof committee)[number]) => local[m.name]?.role ?? m.role[lang] ?? m.role.en;
+const [lead, ...members] = [
+  ...committee.filter((m) => m.secretaryGeneral),
+  ...committee.filter((m) => !m.secretaryGeneral),
+];
+---
+
+<section class="container-page mt-20" id="committee">
+  <SectionHeading title={t('committee.title')} lead={t('site.fullName')} />
+
+  <div class="rounded-2xl bg-[var(--accent)] p-7 text-[var(--accent-contrast)] sm:p-9">
+    <p class="eyebrow">{t('committee.secretaryGeneral')}</p>
+    <p class="headline mt-2 text-3xl sm:text-4xl">{lead.name}</p>
+    <p class="mt-3 text-[1.02rem] leading-snug">
+      <span class="font-semibold">{countryOf(lead)}</span>
+      {roleOf(lead).map((line) => <span class="block">{line}</span>)}
+    </p>
+  </div>
+
+  <ul class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      members.map((m) => (
+        <li class="rounded-2xl border-2 border-[var(--accent)] p-6">
+          <p class="eyebrow text-[var(--accent-ink)]">{countryOf(m)}</p>
+          <p class="headline mt-1.5 text-xl">{m.name}</p>
+          <p class="mt-2 text-[0.95rem] leading-snug text-[var(--text-muted)]">
+            {roleOf(m).map((line) => <span class="block">{line}</span>)}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

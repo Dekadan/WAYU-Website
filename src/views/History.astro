@@ -1,0 +1,114 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { dirOf, useTranslations, type Lang } from '../i18n/utils';
+import { getHistory, historyImage, historyLang, historySlug, historyWhen } from '../lib/history';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const events = await Promise.all(
+  (await getHistory(lang)).map(async (entry) => ({
+    entry,
+    slug: historySlug(entry),
+    when: historyWhen(entry, lang),
+    year: entry.data.date.getUTCFullYear(),
+    contentLang: historyLang(entry),
+    cover: historyImage(entry),
+    Content: (await render(entry)).Content,
+  })),
+);
+
+/** First event of each year, for the jump bar. */
+const years: [number, string][] = [];
+for (const e of events) if (!years.some(([y]) => y === e.year)) years.push([e.year, e.slug]);
+---
+
+<BaseLayout lang={lang} title={t('history.title')} description={t('history.description')}>
+  <PageHeader
+    eyebrow={t('site.fullName')}
+    title={t('history.title')}
+    description={t('history.description')}
+    image="/uploads/history/wayu-2018-hall.jpg"
+  />
+
+  <nav class="container-page sticky top-[4.75rem] z-20 -mt-2 py-3" aria-label={t('history.title')}>
+    <ul class="flex gap-2 overflow-x-auto rounded-full bg-[var(--surface-raised)]/95 p-1.5 shadow-[0_2px_14px_rgba(35,31,32,0.12)] ring-1 ring-[var(--border)] backdrop-blur [scrollbar-width:none]">
+      {
+        years.map(([year, slug]) => (
+          <li>
+            <a
+              href={`#${slug}`}
+              class="block rounded-full px-4 py-2 font-display font-semibold transition hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
+            >
+              {year}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <ol class="container-page mt-10 space-y-24 sm:mt-14 sm:space-y-32">
+    {
+      events.map(({ entry, slug, when, cover, Content, contentLang }, i) => {
+        const gallery = entry.data.image ? entry.data.gallery : entry.data.gallery.slice(1);
+        return (
+          <li id={slug} class="scroll-mt-40" lang={contentLang !== lang ? contentLang : undefined} dir={dirOf(contentLang)}>
+            <article class:list={['grid items-start gap-8 lg:grid-cols-2 lg:gap-14', i % 2 === 1 && 'lg:[&>*:first-child]:order-2']}>
+              {cover && (
+                <figure class="relative">
+                  <img
+                    src={cover.src}
+                    alt={cover.alt}
+                    loading={i < 2 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    class="cut-top max-h-[34rem] w-full rounded-b-2xl bg-[var(--surface-sunken)] object-contain"
+                  />
+                  <div class="absolute start-0 top-0 h-[13%] w-full bg-[var(--accent)] [clip-path:polygon(0_69%,100%_0,100%_7%,0_76%)]" aria-hidden="true" />
+                </figure>
+              )}
+
+              <div>
+                <p class="flex flex-wrap items-center gap-2">
+                  <span class="rounded-full bg-[var(--accent)] px-3 py-1 font-display text-sm font-semibold text-[var(--accent-contrast)]">
+                    {when}
+                  </span>
+                  {entry.data.place && (
+                    <span class="font-display text-sm font-medium text-[var(--text-muted)]">{entry.data.place}</span>
+                  )}
+                </p>
+                <h2 class="headline mt-4 text-3xl sm:text-[2.4rem]">{entry.data.title}</h2>
+                <div class="prose-wayu mt-6 text-[1.05rem] sm:text-[1.08rem]">
+                  <Content />
+                </div>
+
+                {gallery.length > 0 && (
+                  <ul class:list={['mt-8 grid gap-4', gallery.length > 2 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2']}>
+                    {gallery.map((photo) => (
+                      <li>
+                        <figure>
+                          <div class="frame-orange">
+                            <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" class="aspect-[4/3] w-full bg-[var(--surface-sunken)] object-contain" />
+                          </div>
+                          {photo.caption && (
+                            <figcaption class="mt-2 text-sm font-medium text-[var(--text-muted)]">{photo.caption}</figcaption>
+                          )}
+                        </figure>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </article>
+          </li>
+        );
+      })
+    }
+  </ol>
+</BaseLayout>

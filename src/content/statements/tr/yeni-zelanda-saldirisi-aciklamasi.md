@@ -1,11 +1,11 @@
 ---
 title: "Emperyalizmin Körüklediği Bölücü Girişimleri Boşa Çıkaracağız"
 description: >-
-  Yeni Zelanda'daki cami saldırısı üzerine WAYU Yürütme Komitesi'nin açıklaması:
+  Yeni Zelanda'daki cami saldırısı üzerine WAYU Yürütme Kurulu'nin açıklaması:
   "Bunlar bir dini ya da etnik gruba karşı değil, bütün insanlığa karşı işlenmiş
   suçlardır."
 date: 2019-03-16
-issuedBy: WAYU Yürütme Komitesi
+issuedBy: WAYU Yürütme Kurulu
 image: /uploads/yeni-zelanda-aciklamasi.jpg
 imageAlt: Bir caminin minaresi ve açıklama metninden bir alıntı.
 tags:

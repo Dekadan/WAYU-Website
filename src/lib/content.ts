@@ -38,11 +38,27 @@ const isVisible = (entry: { data: { draft?: boolean } }) =>
 const byDateDesc = (a: SectionEntry, b: SectionEntry) =>
   b.data.date.valueOf() - a.data.date.valueOf();
 
-/** All published entries of a section in one language, newest first. */
-export async function getSection(section: Section, lang: Lang): Promise<SectionEntry[]> {
+/** Published entries written in exactly this language, newest first. Used to build routes. */
+export async function getOwnSection(section: Section, lang: Lang): Promise<SectionEntry[]> {
   const entries = await getCollection(section, (entry) => isVisible(entry));
   return entries.filter((entry) => entryLang(entry) === lang).sort(byDateDesc);
 }
+
+/**
+ * What a reader of `lang` should see in a listing: entries in their language,
+ * plus the English original of anything not translated yet. Fallback entries
+ * keep their English URL; `isFallback` tells templates to mark them.
+ */
+export async function getSection(section: Section, lang: Lang): Promise<SectionEntry[]> {
+  const entries = await getCollection(section, (entry) => isVisible(entry));
+  const own = entries.filter((entry) => entryLang(entry) === lang);
+  if (lang === defaultLang) return own.sort(byDateDesc);
+  const translated = new Set(own.map(entrySlug));
+  const fallback = entries.filter((e) => entryLang(e) === defaultLang && !translated.has(entrySlug(e)));
+  return [...own, ...fallback].sort(byDateDesc);
+}
+
+export const isFallback = (entry: AnyEntry, lang: Lang) => entryLang(entry) !== lang;
 
 /** Documents are an ordered set of texts, not a feed. */
 export async function getDocuments(lang: Lang) {
@@ -56,9 +72,13 @@ export async function getDocuments(lang: Lang) {
 
 export async function getAuthors(lang: Lang) {
   const authors = await getCollection('authors', (entry) => isVisible(entry));
-  return authors
-    .filter((author) => entryLang(author) === lang)
-    .sort((a, b) => a.data.name.localeCompare(b.data.name, lang));
+  const own = authors.filter((author) => entryLang(author) === lang);
+  const translated = new Set(own.map(entrySlug));
+  const fallback =
+    lang === defaultLang
+      ? []
+      : authors.filter((a) => entryLang(a) === defaultLang && !translated.has(entrySlug(a)));
+  return [...own, ...fallback].sort((a, b) => a.data.name.localeCompare(b.data.name, lang));
 }
 
 /**
@@ -87,7 +107,7 @@ export async function getFeed(lang: Lang, sections: Section[] = ['statements', '
 
 /** Other entries in the same section, preferring ones that share a tag. */
 export async function getRelated(section: Section, current: SectionEntry, lang: Lang, limit = 3) {
-  const siblings = (await getSection(section, lang)).filter((e) => e.id !== current.id);
+  const siblings = (await getOwnSection(section, lang)).filter((e) => e.id !== current.id);
   const tags = new Set(current.data.tags);
   const scored = siblings.map((entry) => ({
     entry,

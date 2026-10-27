@@ -1,0 +1,11 @@
+// Cloudflare hosting: the built site in dist/ served as static assets.
+// Static asset requests are free and unmetered; no Worker script runs.
+{
+  "name": "wayu",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

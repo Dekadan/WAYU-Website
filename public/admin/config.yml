@@ -1,17 +1,19 @@
-# Decap CMS — the /admin panel behind wayouthunion.org
+# Content panel behind /admin (Sveltia CMS, Decap-compatible config).
 #
-# Content is committed straight to the repository, so the CMS never needs a
-# database or a server of its own. Two backends are supported:
-#
-#   git-gateway  — Netlify hosting + Netlify Identity. Editors are invited by
-#                  email and never touch GitHub. This is the active setting.
-#   github       — any host. Editors log in with a GitHub account that has
-#                  write access to the repository. Swap the block below and
-#                  see README.md for the OAuth step.
+# Content is committed straight to the GitHub repository, so the panel needs
+# no database and no server. Editors sign in with a GitHub account that has
+# write access to Dekadan/WAYU-Website ("Sign In with GitHub", via the
+# wayu-cms-auth Worker), and every save is a commit; Cloudflare Workers
+# Builds rebuilds and deploys the site from main.
 
 backend:
-  name: git-gateway
+  name: github
+  repo: Dekadan/WAYU-Website
   branch: main
+  base_url: https://wayu-cms-auth.bvu-dizin.workers.dev
+  # The repository is public, so sign-in asks only for public-repo access
+  # and leaves editors' private repositories out of the token.
+  auth_scope: public_repo
   commit_messages:
     create: 'content: create {{collection}} "{{slug}}"'
     update: 'content: update {{collection}} "{{slug}}"'
@@ -19,16 +21,9 @@ backend:
     uploadMedia: 'content: upload {{path}}'
     deleteMedia: 'content: delete {{path}}'
 
-# backend:
-#   name: github
-#   repo: Dekadan/WAYU-Website
-#   branch: main
-
 # Lets `npm run cms` edit local files while `npm run dev` is running.
 local_backend: true
 
-# Editors submit changes for review instead of publishing straight to main.
-publish_mode: editorial_workflow
 
 media_folder: public/uploads
 public_folder: /uploads
@@ -37,8 +32,11 @@ i18n:
   # Writes `src/content/<collection>/<locale>/<slug>.md`, which is exactly the
   # layout src/content.config.ts reads back.
   structure: multiple_folders
-  locales: [en, tr]
+  locales: [en, tr, ar, es, ru, it, fr, pt, fa, zh]
   default_locale: en
+  # A post may be published in English only; the site shows the English
+  # original in the other languages until a translation is added.
+  save_all_locales: false
 
 locale: en
 
@@ -71,7 +69,7 @@ collections:
           widget: text,
           required: false,
           i18n: true,
-          hint: One paragraph. Used in listings, search results and link previews.,
+          hint: 'One paragraph. Used in listings, search results and link previews.',
         }
       - { name: date, label: Date, widget: datetime, date_format: DD.MM.YYYY, time_format: false, format: 'YYYY-MM-DD', i18n: duplicate }
       - {
@@ -92,6 +90,7 @@ collections:
         }
       - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
       - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true, hint: What a screen reader announces in place of the image. }
+      - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
       - { name: tags, label: Tags, widget: list, required: false, i18n: true }
       - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
       - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
@@ -130,6 +129,7 @@ collections:
         }
       - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
       - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true }
+      - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
       - { name: tags, label: Tags, widget: list, required: false, i18n: true }
       - {
           name: originalSource,
@@ -165,6 +165,7 @@ collections:
       - { name: sourceUrl, label: Source URL, widget: string, required: false, i18n: duplicate, pattern: ['^https?://.+', 'Must start with http:// or https://'] }
       - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
       - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true }
+      - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
       - { name: tags, label: Tags, widget: list, required: false, i18n: true }
       - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
       - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
@@ -213,6 +214,7 @@ collections:
       - { name: file, label: PDF version, widget: file, required: false, i18n: duplicate, hint: Optional. Adds a download button at the top of the page. }
       - { name: image, label: Image, widget: image, required: false, i18n: duplicate }
       - { name: imageAlt, label: Image description, widget: string, required: false, i18n: true }
+      - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
       - { name: tags, label: Tags, widget: list, required: false, i18n: true }
       - { name: featured, label: Pin to homepage, widget: boolean, default: false, i18n: duplicate }
       - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
@@ -235,7 +237,7 @@ collections:
       - { name: role, label: Role, widget: string, required: false, i18n: true }
       - { name: organization, label: Organisation, widget: string, required: false, i18n: true }
       - { name: country, label: Country, widget: string, required: false, i18n: true }
-      - { name: bio, label: Short biography, widget: text, required: false, i18n: true, hint: One or two sentences, shown on cards and under the byline. }
+      - { name: bio, label: Short biography, widget: text, required: false, i18n: true, hint: 'One or two sentences, shown on cards and under the byline.' }
       - { name: avatar, label: Photograph, widget: image, required: false, i18n: duplicate }
       - { name: website, label: Website, widget: string, required: false, i18n: duplicate, pattern: ['^https?://.+', 'Must start with http:// or https://'] }
       - { name: draft, label: Hidden, widget: boolean, default: false, i18n: duplicate }
@@ -258,6 +260,7 @@ collections:
           - { name: description, label: Summary, widget: text, hint: Also shown in the dark band on the homepage. }
           - { name: image, label: Image, widget: image, required: false }
           - { name: imageAlt, label: Image description, widget: string, required: false }
+          - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
           - {
               name: stats,
               label: Key figures,
@@ -291,6 +294,7 @@ collections:
           - { name: description, label: Özet, widget: text, hint: Anasayfadaki koyu bantta da gösterilir. }
           - { name: image, label: Görsel, widget: image, required: false }
           - { name: imageAlt, label: Görsel açıklaması, widget: string, required: false }
+          - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
           - {
               name: stats,
               label: Rakamlar,
@@ -324,6 +328,7 @@ collections:
           - { name: description, label: Summary, widget: text }
           - { name: image, label: Image, widget: image, required: false }
           - { name: imageAlt, label: Image description, widget: string, required: false }
+          - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
           - {
               name: highlights,
               label: Highlight blocks,
@@ -346,6 +351,7 @@ collections:
           - { name: description, label: Özet, widget: text }
           - { name: image, label: Görsel, widget: image, required: false }
           - { name: imageAlt, label: Görsel açıklaması, widget: string, required: false }
+          - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
           - {
               name: highlights,
               label: Öne çıkan bloklar,
@@ -358,3 +364,34 @@ collections:
                 ],
             }
           - { name: body, label: Metin, widget: markdown }
+
+  # ---------------------------------------------------------------- History
+  - name: history
+    label: History
+    label_singular: Event
+    description: WAYU's own record. One entry per event; they appear on /history oldest first.
+    folder: src/content/history
+    create: true
+    slug: '{{year}}-{{slug}}'
+    i18n: true
+    preview_path: 'history'
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: date, label: Date, widget: datetime, date_format: DD.MM.YYYY, time_format: false, format: 'YYYY-MM-DD', i18n: duplicate, hint: Used for ordering. }
+      - { name: dateLabel, label: Date as shown, widget: string, required: false, i18n: true, hint: 'Only when the exact day is unknown or it is a range, e.g. "2020" or "17–23 March 2018".' }
+      - { name: place, label: Place, widget: string, required: false, i18n: true }
+      - { name: image, label: Main photo, widget: image, required: false, i18n: duplicate }
+      - { name: imageAlt, label: Photo description, widget: string, required: false, i18n: true }
+      - { name: imageCredit, label: Photo credit, widget: string, required: false, i18n: duplicate, hint: 'Only for photos that need attribution, e.g. Photo: Name / Wikimedia Commons, CC BY 4.0' }
+      - name: gallery
+        label: More photos
+        widget: list
+        required: false
+        i18n: true
+        fields:
+          - { name: src, label: Photo, widget: image }
+          - { name: alt, label: Photo description, widget: string, required: false }
+          - { name: caption, label: Caption, widget: string, required: false }
+      - { name: draft, label: Draft (not published), widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Text, widget: markdown, required: false, i18n: true }

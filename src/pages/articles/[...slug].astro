@@ -1,10 +1,10 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import PostDetail from '../../views/PostDetail.astro';
-import { getSection, entrySlug } from '../../lib/content';
+import { getOwnSection, entrySlug } from '../../lib/content';
 
 export const getStaticPaths = (async () => {
-  const entries = await getSection('articles', 'en');
+  const entries = await getOwnSection('articles', 'en');
   return entries.map((entry) => ({
     params: { slug: entrySlug(entry) },
     props: { entry },

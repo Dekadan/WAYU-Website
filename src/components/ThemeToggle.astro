@@ -1,13 +1,21 @@
 ---
 // Theme is applied by an inline script in BaseLayout before paint; this button
 // only flips the stored preference.
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useTranslations(Astro.props.lang);
 ---
 
 <button
   type="button"
   data-theme-toggle
-  class="grid size-9 place-items-center rounded-full border border-white/20 text-current transition hover:border-white/50 hover:bg-white/10"
-  aria-label="Toggle dark mode"
+  class="grid size-10 place-items-center rounded-full border border-[var(--border)] text-current transition hover:bg-[var(--surface-sunken)]"
+  aria-label={t('nav.theme')}
+  aria-pressed="false"
 >
   <svg
     class="size-4 hidden [:root[data-theme='dark']_&]:block"
@@ -38,11 +46,15 @@
 
 <script>
   document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
     button.addEventListener('click', () => {
       const root = document.documentElement;
       const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
-      localStorage.setItem('wayu-theme', next);
+      button.setAttribute('aria-pressed', String(next === 'dark'));
+      try {
+        localStorage.setItem('wayu-theme', next);
+      } catch {}
     });
   });
 </script>
