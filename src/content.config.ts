@@ -10,6 +10,12 @@ import { z } from 'astro/zod';
 const localised = (collection: string) =>
   glob({ pattern: '**/[^_]*.{md,mdx}', base: `./src/content/${collection}` });
 
+/**
+ * An optional link. The CMS saves a field the editor left empty as '', which
+ * is not a URL, so a blank one is read as absent rather than failing the build.
+ */
+const optionalUrl = z.preprocess((value) => (value === '' ? undefined : value), z.url().optional());
+
 /** Fields every piece of content shares. */
 const base = {
   title: z.string(),
@@ -31,7 +37,7 @@ const base = {
    * WAYU statement before we do, and that credit belongs on every section.
    */
   source: z.string().optional(),
-  sourceUrl: z.url().optional(),
+  sourceUrl: optionalUrl,
 };
 
 /** Opinion pieces and analysis, written by named authors. */
@@ -43,7 +49,7 @@ const articles = defineCollection({
     author: z.string().optional(),
     /** Set when the piece was first published elsewhere. */
     originalSource: z.string().optional(),
-    originalSourceUrl: z.url().optional(),
+    originalSourceUrl: optionalUrl,
   }),
 });
 
@@ -138,7 +144,7 @@ const authors = defineCollection({
     country: z.string().optional(),
     bio: z.string().optional(),
     avatar: z.string().optional(),
-    website: z.url().optional(),
+    website: optionalUrl,
     draft: z.boolean().default(false),
   }),
 });
