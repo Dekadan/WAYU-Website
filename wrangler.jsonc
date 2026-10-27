@@ -3,6 +3,11 @@
 {
   "name": "wayu",
   "compatibility_date": "2026-10-01",
+  // waiyouthunion.com is the site; the workers.dev preview stays up (noindex).
+  "routes": [
+    { "pattern": "waiyouthunion.com", "custom_domain": true },
+    { "pattern": "www.waiyouthunion.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
