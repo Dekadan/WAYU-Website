@@ -34,9 +34,10 @@ i18n:
   structure: multiple_folders
   locales: [en, tr, ar, es, ru, it, fr, pt, fa, zh]
   default_locale: en
-  # A post may be published in English only; the site shows the English
-  # original in the other languages until a translation is added.
-  save_all_locales: false
+  # A new entry starts in English only, so an editor can save without filling
+  # nine translations; other languages are switched on per entry when a
+  # translation exists. The site shows the English original until then.
+  initial_locales: default
 
 locale: en
 
